@@ -18,7 +18,7 @@
 Quickly create high-quality React data tables that look and feel like the rest
 of your shadcn/ui project.
 
-Built with [shadcn/ui](https://ui.shadcn.com), [TanStack Table <sup>V8</sup>](https://tanstack.com/table/v8),
+Built with [shadcn/ui](https://ui.shadcn.com), [TanStack Table <sup>V9</sup>](https://tanstack.com/table/latest),
 and [Tailwind CSS <sup>V4</sup>](https://tailwindcss.com). The API and feature
 set are modeled on [Material React Table <sup>V3</sup>](https://www.material-react-table.com)
 — all of MRT V3's feature guides are implemented.
@@ -296,4 +296,4 @@ The API surface, option names, and feature set are openly modeled on
 [Material React Table](https://www.material-react-table.com) by
 [Kevin Van Cott](https://github.com/KevinVandy) — years of API design iteration
 this project gratefully stands on. Powering everything underneath:
-[TanStack Table](https://tanstack.com/table/v8) and [shadcn/ui](https://ui.shadcn.com).
+[TanStack Table](https://tanstack.com/table/latest) and [shadcn/ui](https://ui.shadcn.com).
