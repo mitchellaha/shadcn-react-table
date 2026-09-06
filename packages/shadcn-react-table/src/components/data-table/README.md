@@ -1,7 +1,7 @@
 # Shadcn React Table
 
 A shadcn/ui data table with Material React Table (MRT V3) parity, built on
-TanStack Table v8. Import from `@monabbir/shadcn-react-table/components/data-table`.
+TanStack Table v9. Import from `@monabbir/shadcn-react-table/components/data-table`.
 
 ```tsx
 const table = useDataTable({ data, columns /* + feature flags */ })
@@ -9,8 +9,15 @@ return <DataTable table={table} />
 ```
 
 `useDataTable` extends the full TanStack `TableOptions`, so anything TanStack
-accepts (state, `getRowId`, `manual*` flags, row models) passes straight
-through. Our presentation/feature options and UI state live on `table.tableInstance`.
+accepts (state, `getRowId`, `manual*` flags) passes straight through. Features and
+row models are fixed by the package and gated by the feature flags — v9 no longer
+takes `get*RowModel` per call. Our presentation/feature options and UI state live
+on `table.tableInstance`.
+
+Type columns with the exported `DataTableColumnDef<TData>` (v9's `ColumnDef` takes
+the feature set first). Inside your own `cell`/`header` renderers the `table`
+argument is the *core* table — `resolveDataTable(table)` returns the enriched
+instance with `.state` and `.tableInstance`.
 
 ## Feature flags (all opt-in unless noted)
 
@@ -80,5 +87,5 @@ token is `--highlight` (match highlighting), shipped with a fallback to
 
 - Column virtualization applies fixed column widths and is not combined with
   column pinning/ordering or grouped (multi-row) headers.
-- React Compiler is disabled around `useReactTable`/`useVirtualizer` (a known
-  TanStack v8 interaction); the lint warning is expected and benign.
+- Column pinning is logical: `start`/`end`, not `left`/`right` — in state, in
+  `column.pin()`, and in the `data-pinned` DOM attribute.

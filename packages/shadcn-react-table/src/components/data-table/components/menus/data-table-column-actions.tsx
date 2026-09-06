@@ -1,6 +1,6 @@
 "use client"
 
-import type { Column, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -17,11 +17,11 @@ import {
 } from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils"
 
-import type { DataTableInstance } from "../../core/types"
+import type { DataTableColumn, DataTableInstance } from "../../core/types"
 import { getColumnLabel } from "../../helpers/column-label"
 
 interface DataTableColumnActionsProps<TData extends RowData, TValue> {
-  column: Column<TData, TValue>
+  column: DataTableColumn<TData, TValue>
   table: DataTableInstance<TData>
   className?: string
 }
@@ -156,15 +156,15 @@ export function DataTableColumnActions<TData extends RowData, TValue>({
               <DropdownMenuSeparator />
             )}
             <DropdownMenuItem
-              onClick={() => column.pin("left")}
-              disabled={pinned === "left"}
+              onClick={() => column.pin("start")}
+              disabled={pinned === "start"}
             >
               <icons.pin />
               {localization.pinToLeft}
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => column.pin("right")}
-              disabled={pinned === "right"}
+              onClick={() => column.pin("end")}
+              disabled={pinned === "end"}
             >
               <icons.pin />
               {localization.pinToRight}
@@ -185,7 +185,7 @@ export function DataTableColumnActions<TData extends RowData, TValue>({
               <DropdownMenuSeparator />
             )}
             {renderColumnActionsMenuItems({
-              column: column as Column<TData, unknown>,
+              column: column as DataTableColumn<TData, unknown>,
               table,
             })}
           </>

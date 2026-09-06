@@ -18,7 +18,7 @@ return <DataTable table={table} />
 ```
 
 ## Initial pins
-Pin columns from the start with `initialState.columnPinning`, grouping ids into `left` and `right`.
+Pin columns from the start with `initialState.columnPinning`, grouping ids into `start` and `end`.
 
 ```tsx
 const table = useDataTable({
@@ -27,8 +27,8 @@ const table = useDataTable({
   enableColumnPinning: true,
   initialState: {
     columnPinning: {
-      left: ["firstName"],
-      right: ["salary"],
+      start: ["firstName"],
+      end: ["salary"],
     },
   },
 })

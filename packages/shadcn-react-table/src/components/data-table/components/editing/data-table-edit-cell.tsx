@@ -1,6 +1,6 @@
 "use client"
 
-import type { Cell, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 import * as React from "react"
 
 import {
@@ -9,7 +9,7 @@ import {
   ContextMenuTrigger,
 } from "@workspace/ui/components/context-menu"
 
-import type { DataTableInstance } from "../../core/types"
+import type { DataTableCell, DataTableInstance } from "../../core/types"
 import { getColumnLabel } from "../../helpers/column-label"
 import { isColumnEditable } from "../../helpers/is-column-editable"
 import { ClickToCopy } from "../body/click-to-copy"
@@ -26,7 +26,7 @@ export function DataTableBodyCellContent<TData extends RowData>({
   table,
   fallback,
 }: {
-  cell: Cell<TData, unknown>
+  cell: DataTableCell<TData, unknown>
   table: DataTableInstance<TData>
   fallback: React.ReactNode
 }) {
@@ -107,7 +107,7 @@ function RowDraftEditor<TData extends RowData>({
   cell,
   table,
 }: {
-  cell: Cell<TData, unknown>
+  cell: DataTableCell<TData, unknown>
   table: DataTableInstance<TData>
 }) {
   const cn = table.tableInstance
@@ -134,7 +134,7 @@ function LocalDraftEditor<TData extends RowData>({
   table,
   exitOnCommit,
 }: {
-  cell: Cell<TData, unknown>
+  cell: DataTableCell<TData, unknown>
   table: DataTableInstance<TData>
   exitOnCommit: boolean
 }) {

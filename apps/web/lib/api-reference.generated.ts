@@ -11,6 +11,14 @@ export interface ApiMember {
 
 export const useDataTableOptions: ApiMember[] = [
   {
+    name: "meta",
+    type: 'Omit<TableMeta<DataTableFeatures, TData>, "dataTableRef">',
+    required: false,
+    default: null,
+    description:
+      "Arbitrary per-table data reachable as `table.options.meta`. Augment the TanStack `TableMeta` interface to type it; `dataTableRef` is reserved.",
+  },
+  {
     name: "localization",
     type: "Partial<DataTableLocalization>",
     required: false,
@@ -323,7 +331,7 @@ export const useDataTableOptions: ApiMember[] = [
   },
   {
     name: "renderDetailPanel",
-    type: "(props: { row: Row<TData> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { row: DataTableRow<TData> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description: "Render an expanding detail panel for each row.",
@@ -367,14 +375,14 @@ export const useDataTableOptions: ApiMember[] = [
   },
   {
     name: "onEditCellSave",
-    type: "(props: { row: Row<TData> column: Column<TData, unknown> value: unknown table: DataTableInstance<TData> }) => void",
+    type: "(props: { row: DataTableRow<TData> column: DataTableColumn<TData, unknown> value: unknown table: DataTableInstance<TData> }) => void",
     required: false,
     default: null,
     description: "",
   },
   {
     name: "onSaveRow",
-    type: "(props: { row: Row<TData> values: Record<string, unknown> table: DataTableInstance<TData> exit: () => void }) => void",
+    type: "(props: { row: DataTableRow<TData> values: Record<string, unknown> table: DataTableInstance<TData> exit: () => void }) => void",
     required: false,
     default: null,
     description: "",
@@ -388,21 +396,21 @@ export const useDataTableOptions: ApiMember[] = [
   },
   {
     name: "renderRowActions",
-    type: "(props: { row: Row<TData> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { row: DataTableRow<TData> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description: "",
   },
   {
     name: "renderCellActionMenuItems",
-    type: "(props: { cell: Cell<TData, unknown> row: Row<TData> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { cell: DataTableCell<TData, unknown> row: DataTableRow<TData> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description: "",
   },
   {
     name: "renderRowActionMenuItems",
-    type: "(props: { row: Row<TData> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { row: DataTableRow<TData> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description:
@@ -410,7 +418,7 @@ export const useDataTableOptions: ApiMember[] = [
   },
   {
     name: "renderColumnActionsMenuItems",
-    type: "(props: { column: Column<TData, unknown> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { column: DataTableColumn<TData, unknown> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description:
@@ -418,7 +426,7 @@ export const useDataTableOptions: ApiMember[] = [
   },
   {
     name: "renderColumnFilterModeMenuItems",
-    type: "(props: { column: Column<TData, unknown> modes: FilterMode[] currentMode: FilterMode onSelect: (mode: FilterMode) => void table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { column: DataTableColumn<TData, unknown> modes: FilterMode[] currentMode: FilterMode onSelect: (mode: FilterMode) => void table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description:
@@ -500,7 +508,7 @@ export const useDataTableOptions: ApiMember[] = [
   },
   {
     name: "getRowHeight",
-    type: '(row: Row<TData>) => number | "auto" | null',
+    type: '(row: DataTableRow<TData>) => number | "auto" | null',
     required: false,
     default: null,
     description:
@@ -812,7 +820,7 @@ export const columnOptions: ApiMember[] = [
   },
   {
     name: "renderColumnFilter",
-    type: "(props: { column: Column<TData, TValue> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { column: DataTableColumn<TData, TValue> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description:
@@ -1243,7 +1251,7 @@ export const tableInstance: ApiMember[] = [
   },
   {
     name: "renderDetailPanel",
-    type: "(props: { row: Row<TData> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { row: DataTableRow<TData> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description: "",
@@ -1314,7 +1322,7 @@ export const tableInstance: ApiMember[] = [
   },
   {
     name: "beginRowEdit",
-    type: "(row: Row<TData>) => void",
+    type: "(row: DataTableRow<TData>) => void",
     required: true,
     default: null,
     description:
@@ -1344,14 +1352,14 @@ export const tableInstance: ApiMember[] = [
   },
   {
     name: "onEditCellSave",
-    type: "(props: { row: Row<TData> column: Column<TData, unknown> value: unknown table: DataTableInstance<TData> }) => void",
+    type: "(props: { row: DataTableRow<TData> column: DataTableColumn<TData, unknown> value: unknown table: DataTableInstance<TData> }) => void",
     required: false,
     default: null,
     description: "",
   },
   {
     name: "onSaveRow",
-    type: "(props: { row: Row<TData> values: Record<string, unknown> table: DataTableInstance<TData> exit: () => void }) => void",
+    type: "(props: { row: DataTableRow<TData> values: Record<string, unknown> table: DataTableInstance<TData> exit: () => void }) => void",
     required: false,
     default: null,
     description: "",
@@ -1365,35 +1373,35 @@ export const tableInstance: ApiMember[] = [
   },
   {
     name: "renderRowActions",
-    type: "(props: { row: Row<TData> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { row: DataTableRow<TData> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description: "",
   },
   {
     name: "renderCellActionMenuItems",
-    type: "(props: { cell: Cell<TData, unknown> row: Row<TData> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { cell: DataTableCell<TData, unknown> row: DataTableRow<TData> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description: "",
   },
   {
     name: "renderRowActionMenuItems",
-    type: "(props: { row: Row<TData> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { row: DataTableRow<TData> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description: "",
   },
   {
     name: "renderColumnActionsMenuItems",
-    type: "(props: { column: Column<TData, unknown> table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { column: DataTableColumn<TData, unknown> table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description: "",
   },
   {
     name: "renderColumnFilterModeMenuItems",
-    type: "(props: { column: Column<TData, unknown> modes: FilterMode[] currentMode: FilterMode onSelect: (mode: FilterMode) => void table: DataTableInstance<TData> }) => React.ReactNode",
+    type: "(props: { column: DataTableColumn<TData, unknown> modes: FilterMode[] currentMode: FilterMode onSelect: (mode: FilterMode) => void table: DataTableInstance<TData> }) => React.ReactNode",
     required: false,
     default: null,
     description: "",
@@ -1478,7 +1486,7 @@ export const tableInstance: ApiMember[] = [
   },
   {
     name: "getRowHeight",
-    type: '(row: Row<TData>) => number | "auto" | null',
+    type: '(row: DataTableRow<TData>) => number | "auto" | null',
     required: false,
     default: null,
     description:

@@ -15,9 +15,11 @@ function makeTable() {
   const state: StubState = { columnFilters: [], globalFilter: undefined }
   const setPageIndex = vi.fn()
   const table = {
-    getState: () => ({ ...state }),
+    get state() {
+      return { ...state }
+    },
     setPageIndex,
-  } as unknown as DataTableInstance<unknown>
+  } as unknown as DataTableInstance<Record<string, unknown>>
   return { table, state, setPageIndex }
 }
 

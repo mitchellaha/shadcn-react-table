@@ -36,8 +36,7 @@ import { type DataTableInstance } from "./types"
  */
 const MemoizedDataTableBody = React.memo(
   DataTableBody,
-  (_prev, next) =>
-    next.table.getState().columnSizingInfo.isResizingColumn !== false
+  (_prev, next) => next.table.state.columnResizing.isResizingColumn !== false
 ) as typeof DataTableBody
 
 interface DataTableProps<
@@ -118,13 +117,13 @@ export function DataTable<TData extends RowData>({
     0
   const showFooter = hasFooter(table)
 
-  const columnSizing = table.getState().columnSizing
-  const columnSizingInfo = table.getState().columnSizingInfo
+  const columnSizing = table.state.columnSizing
+  const columnResizing = table.state.columnResizing
   const columnSizeVars = React.useMemo(
     () => (enableColumnResizing ? getColumnSizeVars(table) : {}),
-    // columnSizing/Info are intentional triggers: recompute vars on resize.
+    // columnSizing/columnResizing are intentional triggers: recompute vars on resize.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [enableColumnResizing, table, columnSizing, columnSizingInfo]
+    [enableColumnResizing, table, columnSizing, columnResizing]
   )
 
   return (

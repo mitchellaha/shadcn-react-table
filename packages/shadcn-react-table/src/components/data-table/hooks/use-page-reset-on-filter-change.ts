@@ -24,8 +24,8 @@ export function usePageResetOnFilterChange<TData extends RowData>(
   { enablePagination, manualPagination, autoResetPageIndex }: PageResetParams
 ): void {
   const filtersKey = JSON.stringify([
-    table.getState().columnFilters,
-    table.getState().globalFilter,
+    table.state.columnFilters,
+    table.state.globalFilter,
   ])
   const prevFiltersKeyRef = React.useRef<string | undefined>(undefined)
   React.useEffect(() => {

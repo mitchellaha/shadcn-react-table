@@ -36,7 +36,7 @@ export function DataTablePagination<TData extends RowData>({
   const { localization, icons, paginationDisplayMode } = table.tableInstance
   if (paginationDisplayMode === "custom") return null
 
-  const { pageIndex, pageSize } = table.getState().pagination
+  const { pageIndex, pageSize } = table.state.pagination
   const totalRows = table.getRowCount()
   const start = totalRows === 0 ? 0 : pageIndex * pageSize + 1
   const end = Math.min((pageIndex + 1) * pageSize, totalRows)

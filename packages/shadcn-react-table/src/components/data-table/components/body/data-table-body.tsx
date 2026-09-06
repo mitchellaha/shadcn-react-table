@@ -1,7 +1,7 @@
 "use client"
 
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
-import { type Cell, type Row, type RowData } from "@tanstack/react-table"
+import { type RowData } from "@tanstack/react-table"
 import type { Virtualizer } from "@tanstack/react-virtual"
 import * as React from "react"
 
@@ -14,7 +14,11 @@ import {
   NON_DATA_COLUMN_IDS,
   SELECTED_ROW_CLASS,
 } from "../../core/constants"
-import type { DataTableInstance } from "../../core/types"
+import type {
+  DataTableCell,
+  DataTableInstance,
+  DataTableRow,
+} from "../../core/types"
 import { resolveRowHeight } from "../../helpers/resolve-row-height"
 import type {
   VirtualRowItem,
@@ -89,8 +93,8 @@ export function DataTableBody<TData extends RowData>({
     .find((c) => !NON_DATA_COLUMN_IDS.has(c.id))?.id
 
   const renderCell = (
-    cell: Cell<TData, unknown>,
-    row: Row<TData>,
+    cell: DataTableCell<TData, unknown>,
+    row: DataTableRow<TData>,
     rowIndex: number,
     colIndex: number,
     rowHeightValue: number | "auto" | undefined
@@ -157,8 +161,10 @@ export function DataTableBody<TData extends RowData>({
           // Fixed layout (resizing on) clips overflowing content with an
           // ellipsis instead of letting it bleed into the next column. An
           // "auto" row opts out so its content wraps and the row grows.
-          enableColumnResizing && !isAutoHeight && "overflow-hidden text-ellipsis",
-          isAutoHeight && "align-top whitespace-normal wrap-break-word",
+          enableColumnResizing &&
+            !isAutoHeight &&
+            "overflow-hidden text-ellipsis",
+          isAutoHeight && "align-top wrap-break-word whitespace-normal",
           getColumnPinningClass(cell.column),
           enableKeyboardNavigation &&
             "focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:-outline-offset-2 focus-visible:outline-none"
@@ -176,7 +182,10 @@ export function DataTableBody<TData extends RowData>({
     )
   }
 
-  const renderCells = (row: Row<TData>, rowIndex: number): React.ReactNode => {
+  const renderCells = (
+    row: DataTableRow<TData>,
+    rowIndex: number
+  ): React.ReactNode => {
     const rowHeightValue = resolveRowHeight(row, { rowHeight, getRowHeight })
     const cells = row.getVisibleCells()
     if (!enableColumnVirtualization) {
@@ -197,7 +206,7 @@ export function DataTableBody<TData extends RowData>({
     )
   }
 
-  const detailRow = (row: Row<TData>) => (
+  const detailRow = (row: DataTableRow<TData>) => (
     <TableRow className="hover:bg-transparent">
       <TableCell colSpan={visibleColumnCount} className="bg-muted/20 p-0">
         <div className="p-3">{renderDetailPanel?.({ row, table })}</div>
@@ -206,7 +215,7 @@ export function DataTableBody<TData extends RowData>({
   )
 
   let runningRowIndex = 0
-  const renderRow = (row: Row<TData>) => {
+  const renderRow = (row: DataTableRow<TData>) => {
     const rowIndex = runningRowIndex++
     const isGrouped = row.getIsGrouped()
     const showDetail = !!renderDetailPanel && row.getIsExpanded() && !isGrouped
@@ -248,7 +257,7 @@ export function DataTableBody<TData extends RowData>({
         )}
       {showSkeletons && !hasRows ? (
         <SkeletonRows
-          rowCount={enablePagination ? table.getState().pagination.pageSize : 8}
+          rowCount={enablePagination ? table.state.pagination.pageSize : 8}
           columnCount={visibleColumnCount}
           padding={padding}
         />

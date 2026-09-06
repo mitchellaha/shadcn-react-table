@@ -1,6 +1,6 @@
 "use client"
 
-import type { Header, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 
 import { DataTableFilterModeMenu } from "../menus/data-table-filter-mode-menu"
 import {
@@ -14,10 +14,10 @@ import {
   TextFilterField,
   type FilterFieldProps,
 } from "./filter-variants"
-import type { DataTableInstance } from "../../core/types"
+import type { DataTableHeader, DataTableInstance } from "../../core/types"
 
 interface DataTableColumnFilterProps<TData extends RowData, TValue> {
-  header: Header<TData, TValue>
+  header: DataTableHeader<TData, TValue>
   table: DataTableInstance<TData>
 }
 

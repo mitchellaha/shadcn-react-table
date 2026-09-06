@@ -29,6 +29,9 @@ const OUT = join(REPO, "apps/web/public/r")
 // consumer's CLI installs them, so those are intentionally NOT listed here.
 const NPM_DEPENDENCIES = [
   "@tanstack/react-table",
+  // Direct dependency since v9: the `ColumnMeta` / `TableMeta` module
+  // augmentation in core/types.ts declares against @tanstack/table-core.
+  "@tanstack/table-core",
   "@tanstack/match-sorter-utils",
   "@tanstack/react-virtual",
   "@dnd-kit/core",

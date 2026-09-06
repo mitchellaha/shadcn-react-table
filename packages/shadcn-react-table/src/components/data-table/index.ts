@@ -14,6 +14,11 @@ export {
 } from "./core/config-context"
 export type { DataTableConfigContextValue } from "./core/config-context"
 
+export { dataTableFeatures } from "./core/table-features"
+export type { DataTableFeatures } from "./core/table-features"
+
+export { resolveDataTable } from "./core/resolve-data-table"
+
 export { defaultIcons } from "./core/icons"
 export type { DataTableIcons, IconComponent } from "./core/icons"
 
@@ -21,6 +26,10 @@ export { defaultLocalization } from "./core/localization"
 export type { DataTableLocalization } from "./core/localization"
 
 export type {
+  DataTableCell,
+  DataTableColumn,
+  DataTableColumnDef,
+  DataTableRow,
   Density,
   FilterVariant,
   FilterMode,

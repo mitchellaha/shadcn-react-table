@@ -1,11 +1,11 @@
 "use client"
 
-import type { Column, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 
 import { Button } from "@workspace/ui/components/button"
 import { TableCell, TableRow } from "@workspace/ui/components/table"
 
-import type { DataTableInstance } from "../../core/types"
+import type { DataTableColumn, DataTableInstance } from "../../core/types"
 import { getColumnLabel } from "../../helpers/column-label"
 import { isColumnEditable } from "../../helpers/is-column-editable"
 import { DataTableEditField } from "./data-table-edit-field"
@@ -72,7 +72,7 @@ function CreateField<TData extends RowData>({
   column,
   table,
 }: {
-  column: Column<TData, unknown>
+  column: DataTableColumn<TData, unknown>
   table: DataTableInstance<TData>
 }) {
   const cn = table.tableInstance

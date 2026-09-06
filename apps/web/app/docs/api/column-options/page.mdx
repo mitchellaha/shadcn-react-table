@@ -5,7 +5,7 @@ export const metadata = { title: "Column options" }
 Per-column configuration lives on the standard TanStack `columnDef.meta` object, which the table augments with the fields below (fully typed wherever `meta` is read).
 
 ```tsx
-const columns: ColumnDef<Person>[] = [
+const columns: DataTableColumnDef<Person>[] = [
   {
     accessorKey: "role",
     header: "Role",
