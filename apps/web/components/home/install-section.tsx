@@ -42,8 +42,12 @@ export function InstallSection() {
       </div>
 
       <div className="mt-8 text-center">
-        <Button asChild variant="outline">
-          <Link href="/docs/installation">Read the installation guide →</Link>
+        <Button
+          render={<Link href="/docs/installation" />}
+          nativeButton={false}
+          variant="outline"
+        >
+          Read the installation guide →
         </Button>
       </div>
     </section>

@@ -29,24 +29,26 @@ export function DataTableDensityToggle<TData extends RowData>({
   const label = `${localization.toggleDensity} (${currentLabel})`
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label={label}
-          className="size-8"
-          onClick={() =>
-            setDensity((prev) => {
-              const next =
-                DENSITY_ORDER[
-                  (DENSITY_ORDER.indexOf(prev) + 1) % DENSITY_ORDER.length
-                ]
-              return next ?? "comfortable"
-            })
-          }
-        >
-          <icons.density />
-        </Button>
+      <TooltipTrigger
+        render={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={label}
+            className="size-8"
+            onClick={() =>
+              setDensity((prev) => {
+                const next =
+                  DENSITY_ORDER[
+                    (DENSITY_ORDER.indexOf(prev) + 1) % DENSITY_ORDER.length
+                  ]
+                return next ?? "comfortable"
+              })
+            }
+          />
+        }
+      >
+        <icons.density />
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </Tooltip>

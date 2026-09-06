@@ -25,8 +25,9 @@ const UI_SRC = join(REPO, "packages/shadcn-react-table/src")
 const OUT = join(REPO, "apps/web/public/r")
 
 // npm packages the data-table source imports directly. The shadcn primitives
-// (below) bring their own deps (radix, cmdk, react-day-picker, cva, …) when the
-// consumer's CLI installs them, so those are intentionally NOT listed here.
+// (below) bring their own deps (@base-ui/react, cmdk, react-day-picker, cva, …)
+// when the consumer's CLI installs them, so those are intentionally NOT listed
+// here.
 const NPM_DEPENDENCIES = [
   "@tanstack/react-table",
   // Direct dependency since v9: the `ColumnMeta` / `TableMeta` module
@@ -38,9 +39,10 @@ const NPM_DEPENDENCIES = [
   "@dnd-kit/sortable",
   "@dnd-kit/utilities",
   "date-fns",
-  // NOT radix-ui: the module has no direct radix import. The primitive blocks
-  // in registryDependencies bring the right headless library for the
-  // consumer's flavor (radix-ui or @base-ui/react) on their own.
+  // NOT @base-ui/react: the module imports no headless primitive directly. The
+  // primitive blocks in registryDependencies pull it in on their own. The
+  // consumer must be on a Base UI shadcn style (base-*) — the source uses Base
+  // UI `render` props, so Radix styles are not supported.
   "lucide-react",
 ]
 
@@ -52,7 +54,7 @@ const DEV_DEPENDENCIES = []
 // shadcn primitives the table imports. Declared as registryDependencies (bare
 // names) so the consumer's `shadcn add` installs them from the shadcn registry
 // in THEIR configured style/baseColor — and skips any they already have. The
-// table only uses standard primitive APIs, so it adapts to any style.
+// table only uses standard primitive APIs, so it adapts to any Base UI style.
 const REGISTRY_DEPENDENCIES = [
   "badge",
   "button",
@@ -92,12 +94,14 @@ const cssVars = {
 
 /** Rewrite internal package imports to the portable shadcn `@/` aliases. */
 function rewrite(content) {
-  return content
-    // Normalize CRLF from Windows checkouts (git autocrlf) so the embedded
-    // file contents — and therefore the artifact — are machine-independent.
-    .replaceAll("\r\n", "\n")
-    .replaceAll("@workspace/ui/components/", "@/components/ui/")
-    .replaceAll("@workspace/ui/lib/", "@/lib/")
+  return (
+    content
+      // Normalize CRLF from Windows checkouts (git autocrlf) so the embedded
+      // file contents — and therefore the artifact — are machine-independent.
+      .replaceAll("\r\n", "\n")
+      .replaceAll("@workspace/ui/components/", "@/components/ui/")
+      .replaceAll("@workspace/ui/lib/", "@/lib/")
+  )
 }
 
 function read(relPath) {

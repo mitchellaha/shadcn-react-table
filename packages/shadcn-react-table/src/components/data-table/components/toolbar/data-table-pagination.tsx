@@ -187,17 +187,19 @@ function PaginationButton({
 }) {
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label={label}
-          onClick={onClick}
-          disabled={disabled}
-          className="size-8"
-        >
-          {children}
-        </Button>
+      <TooltipTrigger
+        render={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={label}
+            onClick={onClick}
+            disabled={disabled}
+            className="size-8"
+          />
+        }
+      >
+        {children}
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </Tooltip>

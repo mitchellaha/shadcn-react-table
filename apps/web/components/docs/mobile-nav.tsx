@@ -3,7 +3,7 @@
 import { RiMenuLine } from "@remixicon/react"
 import * as React from "react"
 
-import { Button } from "@workspace/ui/components/button"
+import { buttonVariants } from "@workspace/ui/components/button"
 import {
   Sheet,
   SheetContent,
@@ -28,11 +28,11 @@ export function DocsMobileNav() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon-sm">
-          <RiMenuLine className="size-4" />
-          <span className="sr-only">Open navigation</span>
-        </Button>
+      <SheetTrigger
+        className={buttonVariants({ variant: "ghost", size: "icon-sm" })}
+      >
+        <RiMenuLine className="size-4" />
+        <span className="sr-only">Open navigation</span>
       </SheetTrigger>
       <SheetContent side="left" className="w-72 max-w-[80vw]">
         <SheetHeader className="border-b">

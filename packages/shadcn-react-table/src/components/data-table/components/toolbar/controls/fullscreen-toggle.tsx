@@ -24,17 +24,19 @@ export function DataTableFullscreenToggle<TData extends RowData>({
     : localization.enterFullscreen
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label={label}
-          aria-pressed={isFullscreen}
-          onClick={() => setIsFullscreen((prev) => !prev)}
-          className="size-8"
-        >
-          {isFullscreen ? <icons.fullscreenExit /> : <icons.fullscreenEnter />}
-        </Button>
+      <TooltipTrigger
+        render={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={label}
+            aria-pressed={isFullscreen}
+            onClick={() => setIsFullscreen((prev) => !prev)}
+            className="size-8"
+          />
+        }
+      >
+        {isFullscreen ? <icons.fullscreenExit /> : <icons.fullscreenEnter />}
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </Tooltip>

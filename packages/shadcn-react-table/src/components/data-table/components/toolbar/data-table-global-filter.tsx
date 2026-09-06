@@ -3,7 +3,7 @@
 import type { RowData } from "@tanstack/react-table"
 import * as React from "react"
 
-import { Button } from "@workspace/ui/components/button"
+import { Button, buttonVariants } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -84,19 +84,21 @@ export function DataTableGlobalFilter<TData extends RowData>({
   if (!expanded) {
     return (
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label={localization.search}
-            className="size-8"
-            onClick={() => {
-              setExpanded(true)
-              requestAnimationFrame(() => inputRef.current?.focus())
-            }}
-          >
-            <icons.search />
-          </Button>
+        <TooltipTrigger
+          render={
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label={localization.search}
+              className="size-8"
+              onClick={() => {
+                setExpanded(true)
+                requestAnimationFrame(() => inputRef.current?.focus())
+              }}
+            />
+          }
+        >
+          <icons.search />
         </TooltipTrigger>
         <TooltipContent>{localization.search}</TooltipContent>
       </Tooltip>
@@ -139,17 +141,18 @@ export function DataTableGlobalFilter<TData extends RowData>({
       {enableGlobalFilterModes && (
         <DropdownMenu>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
+            <TooltipTrigger
+              render={
+                <DropdownMenuTrigger
                   aria-label={localization.globalFilterMode}
-                  className="size-7"
-                >
-                  <icons.search className="size-3" />
-                </Button>
-              </DropdownMenuTrigger>
+                  className={cn(
+                    buttonVariants({ variant: "ghost", size: "icon" }),
+                    "size-7"
+                  )}
+                />
+              }
+            >
+              <icons.search className="size-3" />
             </TooltipTrigger>
             <TooltipContent>{localization.globalFilterMode}</TooltipContent>
           </Tooltip>

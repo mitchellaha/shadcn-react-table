@@ -17,8 +17,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
-import { cn } from "@workspace/ui/lib/utils"
-
 import type { DataTableColumn, DataTableInstance } from "../../core/types"
 import { modeOptionsForVariant, type FilterMode } from "../../fns/filter-fns"
 import { getEffectiveMode } from "../../helpers/effective-filter-mode"
@@ -60,18 +58,15 @@ export function DataTableFilterModeMenu<TData extends RowData, TValue>({
   return (
     <DropdownMenu>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <DropdownMenuTrigger asChild>
-            <button
-              type="button"
+        <TooltipTrigger
+          render={
+            <DropdownMenuTrigger
               aria-label={localization.changeFilterMode}
-              className={cn(
-                "flex size-8 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 aria-expanded:text-foreground"
-              )}
-            >
-              <icons.filter className="size-3.5" />
-            </button>
-          </DropdownMenuTrigger>
+              className="flex size-8 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 aria-expanded:text-foreground"
+            />
+          }
+        >
+          <icons.filter className="size-3.5" />
         </TooltipTrigger>
         <TooltipContent>{localization.filterMode}</TooltipContent>
       </Tooltip>

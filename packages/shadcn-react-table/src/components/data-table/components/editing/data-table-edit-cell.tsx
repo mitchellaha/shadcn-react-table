@@ -89,8 +89,8 @@ export function DataTableBodyCellContent<TData extends RowData>({
   if (cn.renderCellActionMenuItems) {
     node = (
       <ContextMenu>
-        <ContextMenuTrigger asChild>
-          <span className="block">{node}</span>
+        <ContextMenuTrigger render={<span className="block" />}>
+          {node}
         </ContextMenuTrigger>
         <ContextMenuContent>
           {cn.renderCellActionMenuItems({ cell, row, table })}

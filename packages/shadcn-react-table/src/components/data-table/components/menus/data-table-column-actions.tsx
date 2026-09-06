@@ -2,7 +2,7 @@
 
 import type { RowData } from "@tanstack/react-table"
 
-import { Button } from "@workspace/ui/components/button"
+import { buttonVariants } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,20 +59,19 @@ export function DataTableColumnActions<TData extends RowData, TValue>({
   return (
     <DropdownMenu>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
+        <TooltipTrigger
+          render={
+            <DropdownMenuTrigger
               aria-label={localization.columnActions}
               className={cn(
-                "size-7 shrink-0 opacity-70 transition-opacity group-hover/th:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100",
+                buttonVariants({ variant: "ghost", size: "icon" }),
+                "size-7 shrink-0 opacity-70 transition-opacity group-hover/th:opacity-100 focus-visible:opacity-100 data-popup-open:opacity-100",
                 className
               )}
-            >
-              <icons.columnActions />
-            </Button>
-          </DropdownMenuTrigger>
+            />
+          }
+        >
+          <icons.columnActions />
         </TooltipTrigger>
         <TooltipContent>{localization.columnActions}</TooltipContent>
       </Tooltip>

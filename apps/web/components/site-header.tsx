@@ -58,15 +58,14 @@ export function SiteHeader() {
       <div className="flex items-center gap-2">
         <DocsSearch />
         <Button
-          asChild
+          render={<a href={GITHUB_URL} target="_blank" rel="noreferrer" />}
+          nativeButton={false}
           variant="outline"
           size="icon"
           className="size-8"
           aria-label="GitHub repository"
         >
-          <a href={GITHUB_URL} target="_blank" rel="noreferrer">
-            <RiGithubFill />
-          </a>
+          <RiGithubFill />
         </Button>
         <ThemeCustomizer
           iconLibrary={iconLibrary}

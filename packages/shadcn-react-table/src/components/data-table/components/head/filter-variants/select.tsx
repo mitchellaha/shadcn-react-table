@@ -25,9 +25,12 @@ export function SelectFilterField<TData extends RowData, TValue>({
   return (
     <div className="flex items-center gap-1">
       <Select
-        // Always controlled: "" shows the placeholder in both Radix and Base
-        // UI, while `undefined` would flip to uncontrolled and go stale.
+        // Always controlled: "" shows the placeholder, while `undefined` would
+        // flip to uncontrolled and go stale.
         value={value}
+        // Base UI's SelectValue renders the raw value unless the root knows the
+        // items; without this a label that differs from its value never shows.
+        items={options}
         onValueChange={(next) => column.setFilterValue(next || undefined)}
       >
         <SelectTrigger

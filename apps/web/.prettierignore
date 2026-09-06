@@ -2,3 +2,4 @@
 out/
 .turbo/
 node_modules/
+lib/*.generated.ts

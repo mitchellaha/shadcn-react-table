@@ -3,7 +3,7 @@
 import type { RowData } from "@tanstack/react-table"
 import { format } from "date-fns"
 
-import { Button } from "@workspace/ui/components/button"
+import { buttonVariants } from "@workspace/ui/components/button"
 import { Calendar } from "@workspace/ui/components/calendar"
 import {
   Popover,
@@ -42,25 +42,22 @@ export function DateFilterField<TData extends RowData, TValue>({
   const value = column.getFilterValue() as Date | undefined
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn(
-            FIELD_CLASS,
-            "w-full justify-start gap-2 px-2 font-normal"
-          )}
-          aria-label={localization.filterByColumn(getColumnLabel(column))}
-        >
-          <icons.calendar className="text-muted-foreground" />
-          {value ? (
-            <span className="truncate">{format(value, "PP")}</span>
-          ) : (
-            <span className="truncate text-muted-foreground">
-              {localization.pickDate}
-            </span>
-          )}
-        </Button>
+      <PopoverTrigger
+        className={cn(
+          buttonVariants({ variant: "outline", size: "sm" }),
+          FIELD_CLASS,
+          "w-full justify-start gap-2 px-2 font-normal"
+        )}
+        aria-label={localization.filterByColumn(getColumnLabel(column))}
+      >
+        <icons.calendar className="text-muted-foreground" />
+        {value ? (
+          <span className="truncate">{format(value, "PP")}</span>
+        ) : (
+          <span className="truncate text-muted-foreground">
+            {localization.pickDate}
+          </span>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
