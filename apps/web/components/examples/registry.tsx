@@ -8,12 +8,12 @@ import {
   RiSortAsc,
   RiSortDesc,
 } from "@remixicon/react"
-import type { ColumnDef } from "@tanstack/react-table"
 import * as React from "react"
 
 import {
   DataTable,
   useDataTable,
+  type DataTableColumnDef,
   type DataTableInstance,
   type EditDisplayMode,
 } from "@monabbir/shadcn-react-table/components/data-table"
@@ -44,7 +44,7 @@ function BasicExample() {
     data,
     columns,
     getRowId: (row) => row.id,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -62,7 +62,7 @@ function SortingExample() {
         { id: "department", desc: false },
         { id: "salary", desc: true },
       ],
-      pagination: { pageSize: 10 },
+      pagination: { pageIndex: 0, pageSize: 10 },
     },
   })
   return <DataTable table={table} />
@@ -80,7 +80,7 @@ function ColumnFiltersExample() {
     columns,
     getRowId: (row) => row.id,
     defaultShowColumnFilters: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -94,7 +94,7 @@ function FilterModesExample() {
     getRowId: (row) => row.id,
     defaultShowColumnFilters: true,
     enableColumnFilterModes: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -107,7 +107,7 @@ function AdvancedFilterExample() {
     columns,
     getRowId: (row) => row.id,
     enableAdvancedFilter: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -121,7 +121,7 @@ function GlobalSearchExample() {
     getRowId: (row) => row.id,
     enableGlobalFilter: true,
     defaultGlobalFilterMode: "fuzzy",
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -138,7 +138,7 @@ function ColumnOrderingExample() {
     columns,
     getRowId: (row) => row.id,
     enableColumnOrdering: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -152,8 +152,8 @@ function ColumnPinningExample() {
     getRowId: (row) => row.id,
     enableColumnPinning: true,
     initialState: {
-      columnPinning: { left: ["firstName"], right: ["salary"] },
-      pagination: { pageSize: 10 },
+      columnPinning: { start: ["firstName"], end: ["salary"] },
+      pagination: { pageIndex: 0, pageSize: 10 },
     },
   })
   return <DataTable table={table} />
@@ -167,7 +167,7 @@ function ColumnResizingExample() {
     columns,
     getRowId: (row) => row.id,
     enableColumnResizing: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -181,7 +181,7 @@ function ColumnVisibilityExample() {
     getRowId: (row) => row.id,
     initialState: {
       columnVisibility: { startDate: false, progress: false },
-      pagination: { pageSize: 10 },
+      pagination: { pageIndex: 0, pageSize: 10 },
     },
   })
   return <DataTable table={table} />
@@ -199,7 +199,7 @@ function DensityExample() {
     columns,
     getRowId: (row) => row.id,
     defaultDensity: "compact",
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -226,7 +226,7 @@ function LoadingExample() {
     columns,
     getRowId: (row) => row.id,
     isLoading,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
     renderToolbarActions: () => (
       <Button
         variant="outline"
@@ -252,7 +252,7 @@ function RowSelectionExample() {
     columns,
     getRowId: (row) => row.id,
     enableRowSelection: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -266,7 +266,7 @@ function SingleSelectionExample() {
     getRowId: (row) => row.id,
     enableRowSelection: true,
     enableMultiRowSelection: false,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -280,7 +280,7 @@ function RowNumbersExample() {
     getRowId: (row) => row.id,
     enableRowNumbers: true,
     rowNumberMode: "static",
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -294,7 +294,7 @@ function RowPinningExample() {
     getRowId: (row) => row.id,
     enableRowNumbers: true,
     enableRowPinning: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -338,7 +338,7 @@ function GroupingExample() {
     initialState: {
       grouping: ["department"],
       expanded: true,
-      pagination: { pageSize: 50 },
+      pagination: { pageIndex: 0, pageSize: 50 },
     },
   })
   return <DataTable table={table} />
@@ -351,7 +351,7 @@ function DetailPanelExample() {
     data,
     columns,
     getRowId: (row) => row.id,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
     renderDetailPanel: ({ row }) => (
       <dl className="grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
         <Field label="City">{row.original.city}</Field>
@@ -366,7 +366,7 @@ function DetailPanelExample() {
   return <DataTable table={table} />
 }
 
-const orgColumns: ColumnDef<OrgNode>[] = [
+const orgColumns: DataTableColumnDef<OrgNode>[] = [
   { accessorKey: "name", header: "Name" },
   { accessorKey: "title", header: "Title" },
   { accessorKey: "department", header: "Department" },
@@ -468,7 +468,7 @@ function RowActionsExample() {
     data,
     columns,
     getRowId: (row) => row.id,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
     renderRowActions: ({ row }) => (
       <Button
         variant="ghost"
@@ -493,7 +493,7 @@ function CellActionsExample() {
     columns,
     getRowId: (row) => row.id,
     enableClickToCopy: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
     renderCellActionMenuItems: ({ cell }) => (
       <>
         <ContextMenuItem
@@ -533,17 +533,20 @@ function VirtualizedExample() {
   return <DataTable table={table} />
 }
 
-function wideColumns(): ColumnDef<User>[] {
-  const extra = Array.from({ length: 24 }, (_, i): ColumnDef<User> => ({
-    id: `metric${i}`,
-    header: `Metric ${i + 1}`,
-    accessorFn: (row) => (row.age * (i + 3)) % 100,
-    size: 110,
-    meta: { align: "right" },
-    cell: ({ getValue }) => (
-      <span className="tabular-nums">{getValue<number>()}</span>
-    ),
-  }))
+function wideColumns(): DataTableColumnDef<User>[] {
+  const extra = Array.from(
+    { length: 24 },
+    (_, i): DataTableColumnDef<User> => ({
+      id: `metric${i}`,
+      header: `Metric ${i + 1}`,
+      accessorFn: (row) => (row.age * (i + 3)) % 100,
+      size: 110,
+      meta: { align: "right" },
+      cell: ({ getValue }) => (
+        <span className="tabular-nums">{getValue<number>()}</span>
+      ),
+    })
+  )
   return [...userColumns(), ...extra]
 }
 
@@ -569,7 +572,7 @@ function EventListenersExample() {
     data,
     columns,
     getRowId: (row) => row.id,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
     onRowClick: ({ row }) => setLast(row.original.email),
     renderToolbarActions: () => (
       <span className="text-xs text-muted-foreground">
@@ -594,7 +597,7 @@ function CustomIconsExample() {
       columnActions: RiMoreFill,
       columnVisibility: RiEqualizerLine,
     },
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -643,7 +646,7 @@ function ExportExample() {
         Export CSV
       </Button>
     ),
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -672,7 +675,7 @@ function LocalizationExample() {
     getRowId: (row) => row.id,
     localization: SPANISH,
     defaultShowColumnFilters: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   })
   return <DataTable table={table} />
 }
@@ -749,7 +752,7 @@ function InfiniteScrollExample() {
     isFetchingNextPage,
     onLoadMore: loadMore,
     renderToolbarActions: () => (
-      <span className="text-xs tabular-nums text-muted-foreground">
+      <span className="text-xs text-muted-foreground tabular-nums">
         Loaded {rows.length} of {all.length}
       </span>
     ),
@@ -759,8 +762,8 @@ function InfiniteScrollExample() {
 
 function AutoRowHeightExample() {
   const data = React.useMemo(() => baseUsers, [])
-  const columns = React.useMemo<ColumnDef<User>[]>(() => {
-    const bio: ColumnDef<User> = {
+  const columns = React.useMemo<DataTableColumnDef<User>[]>(() => {
+    const bio: DataTableColumnDef<User> = {
       id: "bio",
       header: "Bio",
       size: 300,
@@ -778,7 +781,7 @@ function AutoRowHeightExample() {
     getRowId: (row) => row.id,
     enableColumnResizing: true,
     getRowHeight: () => "auto",
-    initialState: { pagination: { pageSize: 8 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 8 } },
   })
   return <DataTable table={table} />
 }
@@ -802,7 +805,7 @@ function AdvancedExample() {
     enableEditing: true,
     editDisplayMode: "row",
     defaultShowColumnFilters: true,
-    initialState: { pagination: { pageSize: 10 } },
+    initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
     onSaveRow: ({ row, values, exit }) => {
       setData((prev) =>
         prev.map((r) =>

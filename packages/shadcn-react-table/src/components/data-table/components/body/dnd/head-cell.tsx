@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { Header, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 
@@ -14,7 +14,7 @@ import {
   getColumnPinningStyle,
 } from "../../../utils/column-styles"
 import type { IconComponent } from "../../../core/icons"
-import type { DataTableInstance } from "../../../core/types"
+import type { DataTableHeader, DataTableInstance } from "../../../core/types"
 import { ColumnResizeHandle } from "./column-resize-handle"
 
 /** dnd-kit activator props for the current column's drag handle. */
@@ -45,7 +45,7 @@ export function DataTableHeadCell<TData extends RowData, TValue>({
   padding,
   children,
 }: {
-  header: Header<TData, TValue>
+  header: DataTableHeader<TData, TValue>
   table: DataTableInstance<TData>
   draggable: boolean
   resizable: boolean

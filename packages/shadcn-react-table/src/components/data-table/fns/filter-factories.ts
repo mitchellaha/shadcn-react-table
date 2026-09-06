@@ -1,6 +1,7 @@
-import type { FilterFn, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 import { rankItem } from "@tanstack/match-sorter-utils"
 
+import type { DataTableFilterFn } from "../core/types"
 import {
   MODE_FNS,
   isInactive,
@@ -16,8 +17,8 @@ import {
  */
 export function createDynamicFilterFn<TData extends RowData>(
   getMode: (columnId: string) => FilterMode
-): FilterFn<TData> {
-  const fn: FilterFn<TData> = (row, columnId, filterValue) => {
+): DataTableFilterFn<TData> {
+  const fn: DataTableFilterFn<TData> = (row, columnId, filterValue) => {
     const mode = getMode(columnId)
     const modeFn = MODE_FNS[mode] ?? MODE_FNS.contains
     return modeFn(row.getValue(columnId), filterValue)
@@ -34,8 +35,13 @@ export function createDynamicFilterFn<TData extends RowData>(
  */
 export function createGlobalFilterFn<TData extends RowData>(
   getMode: () => GlobalFilterMode
-): FilterFn<TData> {
-  const fn: FilterFn<TData> = (row, columnId, filterValue, addMeta) => {
+): DataTableFilterFn<TData> {
+  const fn: DataTableFilterFn<TData> = (
+    row,
+    columnId,
+    filterValue,
+    addMeta
+  ) => {
     const value = String(filterValue ?? "")
     if (value === "") return true
     const mode = getMode()
@@ -43,7 +49,7 @@ export function createGlobalFilterFn<TData extends RowData>(
       // Stash the rank so `enableGlobalFilterRankedResults` can order rows by
       // match quality; `rankGlobalFuzzy` reads it back off columnFiltersMeta.
       const itemRank = rankItem(row.getValue(columnId), value)
-      addMeta(itemRank)
+      addMeta?.(itemRank)
       return itemRank.passed
     }
     const modeFn = MODE_FNS[mode] ?? MODE_FNS.contains

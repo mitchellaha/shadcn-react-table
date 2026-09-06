@@ -58,7 +58,7 @@ export function DataTableGlobalFilter<TData extends RowData>({
     renderGlobalFilterModeMenuItems,
   } = table.tableInstance
 
-  const external = (table.getState().globalFilter ?? "") as string
+  const external = (table.state.globalFilter ?? "") as string
   const [expanded, setExpanded] = React.useState(external.length > 0)
   const [value, setValue] = React.useState(external)
   // Drive focus-on-expand and let consumers focus the box. Use the forwarded
@@ -70,7 +70,7 @@ export function DataTableGlobalFilter<TData extends RowData>({
   const debounceMs = table.options.manualFiltering ? 300 : 0
 
   React.useEffect(() => {
-    if (value === (table.getState().globalFilter ?? "")) return
+    if (value === (table.atoms.globalFilter.get() ?? "")) return
     const id = setTimeout(
       () => table.setGlobalFilter(value || undefined),
       debounceMs

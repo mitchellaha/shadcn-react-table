@@ -32,10 +32,10 @@ Sorting is standard TanStack, so the usual column knobs apply:
 
 - `enableSorting: false` — disable sorting for a column.
 - `sortDescFirst: true` — start from descending (handy for numeric columns).
-- `sortingFn` — a custom comparator.
+- `sortFn` — a custom comparator.
 
 ```tsx
-const columns: ColumnDef<Person>[] = [
+const columns: DataTableColumnDef<Person>[] = [
   { accessorKey: "id", header: "ID", enableSorting: false },
   { accessorKey: "salary", header: "Salary", sortDescFirst: true },
 ]

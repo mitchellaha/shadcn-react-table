@@ -22,7 +22,7 @@ export function DataTableDropToGroupZone<TData extends RowData>({
   table: DataTableInstance<TData>
 }) {
   const { localization, icons } = table.tableInstance
-  const grouping = table.getState().grouping
+  const grouping = table.state.grouping
   const { setNodeRef, isOver } = useDroppable({ id: GROUP_DROPZONE_ID })
 
   return (

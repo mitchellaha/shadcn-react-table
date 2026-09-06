@@ -4,7 +4,7 @@ import {
   SortableContext,
   horizontalListSortingStrategy,
 } from "@dnd-kit/sortable"
-import type { Header, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 import type { VirtualItem } from "@tanstack/react-virtual"
 import * as React from "react"
 
@@ -16,7 +16,11 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 
 import { DENSITY_CELL_PADDING } from "../../core/constants"
-import type { DataTableInstance } from "../../core/types"
+// Aliased: this file already exports a component named `DataTableHeader`.
+import type {
+  DataTableHeader as HeaderOf,
+  DataTableInstance,
+} from "../../core/types"
 import {
   headerControlsOptionsFromTable,
   shouldShowColumnDragGrip,
@@ -71,7 +75,7 @@ export function DataTableHeader<TData extends RowData>({
     anyFilterable &&
     columnFilterDisplayMode === "subheader"
 
-  const renderHeadCell = (header: Header<TData, unknown>) => (
+  const renderHeadCell = (header: HeaderOf<TData, unknown>) => (
     <DataTableHeadCell
       key={header.id}
       header={header}
@@ -91,7 +95,7 @@ export function DataTableHeader<TData extends RowData>({
     </DataTableHeadCell>
   )
 
-  const renderFilterCell = (header: Header<TData, unknown>) => (
+  const renderFilterCell = (header: HeaderOf<TData, unknown>) => (
     <TableHead
       key={header.id}
       colSpan={header.colSpan}

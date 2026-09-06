@@ -1,11 +1,13 @@
 "use client"
 
-import type { ColumnDef, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 
 import { cn } from "@workspace/ui/lib/utils"
 
 import type { DataTableIcons } from "../core/icons"
 import type { DataTableLocalization } from "../core/localization"
+import { resolveDataTable } from "../core/resolve-data-table"
+import type { DataTableColumnDef } from "../core/types"
 
 export const ROW_NUMBER_COLUMN_ID = "cn-row-number"
 
@@ -16,7 +18,7 @@ export function createRowNumberColumn<TData extends RowData>(
   mode: "static" | "original",
   enableRowPinning: boolean,
   icons: DataTableIcons
-): ColumnDef<TData> {
+): DataTableColumnDef<TData> {
   return {
     id: ROW_NUMBER_COLUMN_ID,
     enableSorting: false,
@@ -28,13 +30,15 @@ export function createRowNumberColumn<TData extends RowData>(
     meta: { disableColumnActions: true, align: "center", label: "#" },
     header: () => <span className="text-muted-foreground">#</span>,
     cell: ({ row, table }) => {
+      // `table` here is the *core* table from the cell context; only the
+      // enriched instance carries the render-phase state snapshot.
+      const dt = resolveDataTable(table)
       const number =
         mode === "original"
           ? row.index + 1
-          : table.getRowModel().rows.indexOf(row) +
+          : dt.getRowModel().rows.indexOf(row) +
             1 +
-            table.getState().pagination.pageIndex *
-              table.getState().pagination.pageSize
+            dt.state.pagination.pageIndex * dt.state.pagination.pageSize
 
       if (!enableRowPinning) {
         return (

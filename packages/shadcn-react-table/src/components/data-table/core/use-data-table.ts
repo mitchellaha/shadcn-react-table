@@ -1,17 +1,6 @@
 "use client"
 
-import {
-  getCoreRowModel,
-  getExpandedRowModel,
-  getFacetedMinMaxValues,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getGroupedRowModel,
-  getPaginationRowModel,
-  useReactTable,
-  type RowData,
-} from "@tanstack/react-table"
+import { useTable, type RowData } from "@tanstack/react-table"
 import * as React from "react"
 
 import { VALUELESS_MODES, type FilterMode } from "../fns/filter-fns"
@@ -35,6 +24,7 @@ import { useResolvedColumns } from "../hooks/use-resolved-columns"
 import { useDataTableConfigContext } from "./config-context"
 import { defaultIcons } from "./icons"
 import { defaultLocalization } from "./localization"
+import { dataTableFeatures, type DataTableFeatures } from "./table-features"
 import type {
   DataTableConfig,
   DataTableInstance,
@@ -43,7 +33,7 @@ import type {
 } from "./types"
 
 /**
- * Core hook. Wraps `useReactTable` with MRT-flavoured defaults (row models,
+ * Core hook. Wraps `useTable` with MRT-flavoured defaults (features/row models,
  * auto-injected selection column, localization) and attaches our presentation
  * state + feature flags to the instance as `table.tableInstance`. Returns the
  * enriched instance to hand to `<DataTable table={table} />`.
@@ -349,98 +339,13 @@ export function useDataTable<TData extends RowData>(
     [resolvedColumns, headerControlsOptions, baseColumnSize]
   )
 
-  // The React Compiler bails on TanStack Table's mutable instance; expected.
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const table = useReactTable<TData>({
-    ...tableOptions,
-    columns: sizedColumns,
-    // Default page-reset off: TanStack's auto-reset runs a state update during
-    // render (warns in React 19 dev). We reset on filter changes via an effect
-    // below instead. Consumers can re-enable by passing the option explicitly.
-    autoResetPageIndex: tableOptions.autoResetPageIndex ?? false,
-    defaultColumn: {
-      filterFn: dynamicFilterFn,
-      ...tableOptions.defaultColumn,
-    },
-    enableGlobalFilter,
-    globalFilterFn: tableOptions.globalFilterFn ?? dynamicGlobalFilterFn,
-    enableColumnPinning,
-    enableColumnResizing,
-    columnResizeMode: tableOptions.columnResizeMode ?? "onChange",
-    enableRowPinning,
-    keepPinnedRows: tableOptions.keepPinnedRows ?? true,
-    enableGrouping,
-    enableExpanding,
-    // Detail panels expand arbitrary rows; tree data uses getSubRows' own logic.
-    getRowCanExpand:
-      tableOptions.getRowCanExpand ??
-      (renderDetailPanel ? () => true : undefined),
-    getGroupedRowModel: enableGrouping
-      ? (tableOptions.getGroupedRowModel ?? getGroupedRowModel())
-      : tableOptions.getGroupedRowModel,
-    getExpandedRowModel: enableExpanding
-      ? (tableOptions.getExpandedRowModel ?? getExpandedRowModel())
-      : tableOptions.getExpandedRowModel,
-    getCoreRowModel: tableOptions.getCoreRowModel ?? getCoreRowModel(),
-    getSortedRowModel: tableOptions.manualSorting
-      ? tableOptions.getSortedRowModel
-      : (tableOptions.getSortedRowModel ?? rankedSortedRowModel),
-    getFilteredRowModel: isManualFiltering
-      ? tableOptions.getFilteredRowModel
-      : (tableOptions.getFilteredRowModel ??
-        (enableAdvancedFilter
-          ? advancedFilteredRowModel
-          : getFilteredRowModel())),
-    // Client-side faceting powers select/multi-select option lists + counts and
-    // range-slider bounds. Skipped in manual mode (server supplies facets) or
-    // when `enableFacetedValues` is off.
-    getFacetedRowModel:
-      isManualFiltering || !enableFacetedValues
-        ? tableOptions.getFacetedRowModel
-        : (tableOptions.getFacetedRowModel ?? getFacetedRowModel()),
-    getFacetedUniqueValues:
-      isManualFiltering || !enableFacetedValues
-        ? tableOptions.getFacetedUniqueValues
-        : (tableOptions.getFacetedUniqueValues ?? getFacetedUniqueValues()),
-    getFacetedMinMaxValues:
-      isManualFiltering || !enableFacetedValues
-        ? tableOptions.getFacetedMinMaxValues
-        : (tableOptions.getFacetedMinMaxValues ?? getFacetedMinMaxValues()),
-    getPaginationRowModel:
-      !enablePagination || tableOptions.manualPagination
-        ? tableOptions.getPaginationRowModel
-        : (tableOptions.getPaginationRowModel ?? getPaginationRowModel()),
-  }) as DataTableInstance<TData>
+  // Back-reference for `resolveDataTable`: the callbacks below and every
+  // TanStack render context need the enriched instance, which does not exist
+  // until `useTable` has run. Parking it on a ref keeps their identities
+  // stable and lets `options.meta` carry it into the core table.
+  const dataTableRef = React.useRef<DataTableInstance<TData> | null>(null)
 
   const enableColumnFilters = tableOptions.enableColumnFilters !== false
-
-  usePageResetOnFilterChange(table, {
-    enablePagination,
-    manualPagination: tableOptions.manualPagination,
-    autoResetPageIndex: tableOptions.autoResetPageIndex,
-  })
-
-  // Advanced filter edits can shrink the result set; jump back to the first
-  // page so the user isn't stranded on an out-of-range page (mirrors the
-  // column-filter reset above).
-  const advancedFilterResetRef = React.useRef(advancedFilter)
-  React.useEffect(() => {
-    if (advancedFilterResetRef.current === advancedFilter) return
-    advancedFilterResetRef.current = advancedFilter
-    if (
-      enableAdvancedFilter &&
-      enablePagination &&
-      !tableOptions.manualPagination
-    ) {
-      table.setPageIndex(0)
-    }
-  }, [
-    advancedFilter,
-    enableAdvancedFilter,
-    enablePagination,
-    tableOptions.manualPagination,
-    table,
-  ])
 
   // Switching a column's mode resets its value so a stale value (e.g. a
   // numeric range left over from "between") can't break the new mode. Valueless
@@ -449,11 +354,11 @@ export function useDataTable<TData extends RowData>(
   const setColumnFilterMode = React.useCallback(
     (columnId: string, mode: FilterMode) => {
       setColumnFilterModes((prev) => ({ ...prev, [columnId]: mode }))
-      const column = table.getColumn(columnId)
+      const column = dataTableRef.current?.getColumn(columnId)
       if (!column) return
       column.setFilterValue(VALUELESS_MODES.has(mode) ? mode : undefined)
     },
-    [table, setColumnFilterModes]
+    [setColumnFilterModes]
   )
 
   // Structural DOM refs, exposed on `table.tableInstance.refs` and attached to the
@@ -472,8 +377,9 @@ export function useDataTable<TData extends RowData>(
 
   const autoSizeColumn = React.useCallback(
     (columnId: string) => {
-      const column = table.getColumn(columnId)
-      if (!column || !column.getCanResize()) return
+      const table = dataTableRef.current
+      const column = table?.getColumn(columnId)
+      if (!table || !column || !column.getCanResize()) return
 
       // Font + horizontal padding come from a real rendered cell so measurement
       // matches the actual type scale and density; fall back to sane defaults.
@@ -518,14 +424,14 @@ export function useDataTable<TData extends RowData>(
 
       table.setColumnSizing((prev) => ({ ...prev, [columnId]: clamped }))
     },
-    [table, headerControlsOptions]
+    [headerControlsOptions]
   )
 
   const autoSizeAllColumns = React.useCallback(() => {
-    for (const column of table.getVisibleLeafColumns()) {
+    for (const column of dataTableRef.current?.getVisibleLeafColumns() ?? []) {
       if (column.getCanResize()) autoSizeColumn(column.id)
     }
-  }, [table, autoSizeColumn])
+  }, [autoSizeColumn])
 
   const config: DataTableConfig<TData> = {
     localization,
@@ -648,7 +554,126 @@ export function useDataTable<TData extends RowData>(
     renderEmpty,
   }
 
-  table.tableInstance = config
+  // v9 registers row models as feature slots instead of `get*RowModel` options.
+  // Omitting a slot is how a stage is skipped (the pipeline optional-chains it),
+  // which is the parity replacement for v8's `undefined` row-model option. The
+  // `manual*` flags are honored by the pipeline itself, so they stay a plain
+  // passthrough and do not gate a slot.
+  //
+  // Keyed on the gating flags rather than `[]`: v8 re-read the `get*RowModel`
+  // options until a model was first used, so flipping a flag false→true
+  // registered that model. Slots are resolved lazily and cached on first call in
+  // v9 too, so true→false stays cached in both versions — parity holds.
+  const features = React.useMemo(() => {
+    const {
+      paginatedRowModel,
+      facetedRowModel,
+      facetedUniqueValues,
+      facetedMinMaxValues,
+      groupedRowModel,
+      expandedRowModel,
+      ...base
+    } = dataTableFeatures
+    return {
+      ...base,
+      sortedRowModel: rankedSortedRowModel,
+      filteredRowModel: enableAdvancedFilter
+        ? advancedFilteredRowModel
+        : dataTableFeatures.filteredRowModel,
+      ...(enablePagination ? { paginatedRowModel } : {}),
+      // Client-side faceting powers select/multi-select option lists + counts
+      // and range-slider bounds. Unlike the pipeline slots, the faceting
+      // feature never reads `manualFiltering`, so the gate lives here: omitted
+      // in manual mode (the server supplies facets) and when
+      // `enableFacetedValues` is off, in which case the faceting APIs return an
+      // empty map / undefined.
+      ...(enableFacetedValues && !isManualFiltering
+        ? { facetedRowModel, facetedUniqueValues, facetedMinMaxValues }
+        : {}),
+      ...(enableGrouping ? { groupedRowModel } : {}),
+      ...(enableExpanding ? { expandedRowModel } : {}),
+      // The runtime object is a subset of the full feature set (slots are
+      // omitted, never replaced by a different shape), so the static type stays
+      // correct for every consumer of `DataTableFeatures`.
+    } as DataTableFeatures
+  }, [
+    enablePagination,
+    enableGrouping,
+    enableExpanding,
+    enableFacetedValues,
+    isManualFiltering,
+    enableAdvancedFilter,
+    rankedSortedRowModel,
+    advancedFilteredRowModel,
+  ])
+
+  const table: DataTableInstance<TData> = Object.assign(
+    useTable({
+      ...tableOptions,
+      features,
+      columns: sizedColumns,
+      meta: { ...tableOptions.meta, dataTableRef },
+      // Default page-reset off: TanStack's auto-reset runs a state update during
+      // render (warns in React 19 dev). We reset on filter changes via an effect
+      // below instead. Consumers can re-enable by passing the option explicitly.
+      autoResetPageIndex: tableOptions.autoResetPageIndex ?? false,
+      defaultColumn: {
+        filterFn: dynamicFilterFn,
+        ...tableOptions.defaultColumn,
+      },
+      enableGlobalFilter,
+      globalFilterFn: tableOptions.globalFilterFn ?? dynamicGlobalFilterFn,
+      enableColumnPinning,
+      enableColumnResizing,
+      columnResizeMode: tableOptions.columnResizeMode ?? "onChange",
+      enableRowPinning,
+      keepPinnedRows: tableOptions.keepPinnedRows ?? true,
+      enableGrouping,
+      enableExpanding,
+      // Detail panels expand arbitrary rows; tree data uses getSubRows' own logic.
+      getRowCanExpand:
+        tableOptions.getRowCanExpand ??
+        (renderDetailPanel ? () => true : undefined),
+    }),
+    // `config.refs` carries DOM refs by design — they are attached to elements
+    // by the components that read `table.tableInstance.refs`; nothing here
+    // reads `.current` during render.
+    // eslint-disable-next-line react-hooks/refs
+    { tableInstance: config }
+  )
+
+  // Render-phase ref write is load-bearing: cell/header renderers resolve the
+  // enriched instance through `options.meta` during this same render pass.
+  // eslint-disable-next-line react-hooks/refs
+  dataTableRef.current = table
+
+  usePageResetOnFilterChange(table, {
+    enablePagination,
+    manualPagination: tableOptions.manualPagination,
+    autoResetPageIndex: tableOptions.autoResetPageIndex,
+  })
+
+  // Advanced filter edits can shrink the result set; jump back to the first
+  // page so the user isn't stranded on an out-of-range page (mirrors the
+  // column-filter reset above).
+  const advancedFilterResetRef = React.useRef(advancedFilter)
+  React.useEffect(() => {
+    if (advancedFilterResetRef.current === advancedFilter) return
+    advancedFilterResetRef.current = advancedFilter
+    if (
+      enableAdvancedFilter &&
+      enablePagination &&
+      !tableOptions.manualPagination
+    ) {
+      table.setPageIndex(0)
+    }
+  }, [
+    advancedFilter,
+    enableAdvancedFilter,
+    enablePagination,
+    tableOptions.manualPagination,
+    table,
+  ])
 
   return table
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { flexRender, type Header, type RowData } from "@tanstack/react-table"
+import { flexRender, type RowData } from "@tanstack/react-table"
 import type { VirtualItem } from "@tanstack/react-virtual"
 
 import {
@@ -55,9 +55,7 @@ export function DataTableFooter<TData extends RowData>({
     >
       {table.getFooterGroups().map((footerGroup) => {
         const headers = enableColumnVirtualization
-          ? (virtualColumns
-              .map((vc) => footerGroup.headers[vc.index])
-              .filter(Boolean) as Header<TData, unknown>[])
+          ? virtualColumns.flatMap((vc) => footerGroup.headers[vc.index] ?? [])
           : footerGroup.headers
         const cells = headers.map((header) => (
           <TableCell

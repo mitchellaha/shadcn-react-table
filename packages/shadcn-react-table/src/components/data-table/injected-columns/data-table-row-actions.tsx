@@ -1,6 +1,6 @@
 "use client"
 
-import type { ColumnDef, Row, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -9,7 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 
-import type { DataTableInstance } from "../core/types"
+import { resolveDataTable } from "../core/resolve-data-table"
+import type {
+  DataTableColumnDef,
+  DataTableInstance,
+  DataTableRow,
+} from "../core/types"
 
 export const ROW_ACTIONS_COLUMN_ID = "cn-row-actions"
 
@@ -18,7 +23,7 @@ export const ROW_ACTIONS_COLUMN_ID = "cn-row-actions"
  *  left edge; when `"last"` (default) they align to the right. */
 export function createRowActionsColumn<TData extends RowData>(
   position: "first" | "last" = "last"
-): ColumnDef<TData> {
+): DataTableColumnDef<TData> {
   const align = position === "first" ? "left" : "right"
   return {
     id: ROW_ACTIONS_COLUMN_ID,
@@ -32,11 +37,9 @@ export function createRowActionsColumn<TData extends RowData>(
     meta: { disableColumnActions: true, align },
     header: () => null,
     cell: ({ row, table }) => (
-      <RowActionsCell
-        row={row}
-        table={table as DataTableInstance<TData>}
-        align={align}
-      />
+      // The cell context hands back the *core* table; consumers' render slots
+      // must keep receiving the enriched instance.
+      <RowActionsCell row={row} table={resolveDataTable(table)} align={align} />
     ),
   }
 }
@@ -46,7 +49,7 @@ function RowActionsCell<TData extends RowData>({
   table,
   align,
 }: {
-  row: Row<TData>
+  row: DataTableRow<TData>
   table: DataTableInstance<TData>
   align: "left" | "right"
 }) {

@@ -1,6 +1,6 @@
 "use client"
 
-import { flexRender, type Header, type RowData } from "@tanstack/react-table"
+import { flexRender, type RowData } from "@tanstack/react-table"
 
 import { Badge } from "@workspace/ui/components/badge"
 import { Button } from "@workspace/ui/components/button"
@@ -16,7 +16,8 @@ import {
 } from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils"
 
-import type { DataTableInstance } from "../../core/types"
+import type { DataTableIcons } from "../../core/icons"
+import type { DataTableHeader, DataTableInstance } from "../../core/types"
 import { getColumnLabel } from "../../helpers/column-label"
 import {
   headerControlsOptionsFromTable,
@@ -28,7 +29,7 @@ import { DataTableColumnActions } from "../menus/data-table-column-actions"
 import { DataTableColumnFilter } from "./data-table-column-filter"
 
 interface DataTableColumnHeaderProps<TData extends RowData, TValue> {
-  header: Header<TData, TValue>
+  header: DataTableHeader<TData, TValue>
   table: DataTableInstance<TData>
 }
 
@@ -93,7 +94,7 @@ export function DataTableColumnHeader<TData extends RowData, TValue>({
   const canSort = column.getCanSort()
   const sorted = column.getIsSorted() // false | "asc" | "desc"
   const sortIndex = column.getSortIndex()
-  const isMultiSort = table.getState().sorting.length > 1 && sortIndex >= 0
+  const isMultiSort = table.state.sorting.length > 1 && sortIndex >= 0
 
   const showActions = shouldShowColumnActions(column, controls)
 
@@ -179,7 +180,7 @@ function SortIndicator({
   icons,
 }: {
   sorted: false | "asc" | "desc"
-  icons: DataTableInstance["tableInstance"]["icons"]
+  icons: DataTableIcons
 }) {
   if (sorted === "asc")
     return <icons.sortAscending className="size-3.5 shrink-0" />

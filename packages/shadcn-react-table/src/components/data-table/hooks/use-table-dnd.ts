@@ -64,9 +64,12 @@ export function useTableDnd<TData extends RowData>(
     // (a column may be draggable solely to support drag-to-group).
     if (!table.tableInstance.enableColumnOrdering) return
     if (active.id === over.id) return
+    // Read the live atom, not `table.state`: that is the render snapshot and
+    // this runs in a drag handler, after any reorder earlier in the drag.
+    const columnOrder = table.atoms.columnOrder.get()
     const base =
-      table.getState().columnOrder.length > 0
-        ? table.getState().columnOrder
+      columnOrder.length > 0
+        ? columnOrder
         : table.getAllLeafColumns().map((c) => c.id)
     const oldIndex = base.indexOf(active.id as string)
     const newIndex = base.indexOf(over.id as string)

@@ -88,13 +88,13 @@ const optionDefaults = destructureDefaults(
 )
 const useDataTableOptions = membersOf(
   typesSf.getInterfaceOrThrow("UseDataTableOptions"),
-  { defaults: optionDefaults, omit: ["getCoreRowModel"] }
+  { defaults: optionDefaults }
 )
 
 // --- Column options (the ColumnMeta augmentation)
 const colMetaModule = typesSf
   .getModules()
-  .find((m) => m.getName().includes("@tanstack/react-table"))
+  .find((m) => m.getName().includes("@tanstack/table-core"))
 const columnOptions = membersOf(colMetaModule.getInterfaceOrThrow("ColumnMeta"))
 
 // --- Table instance API (table.tableInstance = DataTableConfig)

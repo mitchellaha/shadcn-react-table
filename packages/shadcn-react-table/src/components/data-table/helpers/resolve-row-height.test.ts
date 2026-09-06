@@ -1,10 +1,10 @@
-import type { Row } from "@tanstack/react-table"
+import type { DataTableRow } from "../core/types"
 import { describe, expect, it, vi } from "vitest"
 
 import { resolveRowHeight } from "./resolve-row-height"
 
 // The resolver only forwards the row to getRowHeight, so a stub id is enough.
-const row = { id: "r1" } as unknown as Row<unknown>
+const row = { id: "r1" } as unknown as DataTableRow<Record<string, unknown>>
 
 describe("resolveRowHeight", () => {
   it("returns the number from getRowHeight", () => {

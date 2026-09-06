@@ -1,14 +1,14 @@
 "use client"
 
-import type { Row, RowData } from "@tanstack/react-table"
+import type { RowData } from "@tanstack/react-table"
 import { useVirtualizer } from "@tanstack/react-virtual"
 import * as React from "react"
 
-import type { DataTableInstance } from "../core/types"
+import type { DataTableInstance, DataTableRow } from "../core/types"
 import { resolveRowHeight } from "../helpers/resolve-row-height"
 
 export interface VirtualRowItem<TData extends RowData> {
-  row: Row<TData>
+  row: DataTableRow<TData>
   detail: boolean
 }
 
