@@ -21,7 +21,8 @@ const FIXTURE = join(PKG_DIR, ".registry-fixture")
 
 rmSync(FIXTURE, { recursive: true, force: true })
 for (const file of ITEM.files) {
-  const target = join(FIXTURE, file.target)
+  // Mirror the CLI: the `@ui/` alias resolves to `components/ui/` by default.
+  const target = join(FIXTURE, file.target.replace(/^@ui\//, "components/ui/"))
   mkdirSync(dirname(target), { recursive: true })
   writeFileSync(target, file.content)
 }
