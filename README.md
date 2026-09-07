@@ -18,7 +18,7 @@
 Quickly create high-quality React data tables that look and feel like the rest
 of your shadcn/ui project.
 
-Built with [shadcn/ui](https://ui.shadcn.com), [TanStack Table <sup>V8</sup>](https://tanstack.com/table/v8),
+Built with [shadcn/ui](https://ui.shadcn.com), [TanStack Table <sup>V9</sup>](https://tanstack.com/table/latest),
 and [Tailwind CSS <sup>V4</sup>](https://tailwindcss.com). The API and feature
 set are modeled on [Material React Table <sup>V3</sup>](https://www.material-react-table.com)
 — all of MRT V3's feature guides are implemented.
@@ -57,7 +57,7 @@ _All features can be enabled or disabled per table._
 - [x] Localization (full string table) and custom icons (any icon library)
 - [x] Server-side / manual mode (`manualPagination` / `manualSorting` / `manualFiltering`)
 - [x] Theming via shadcn tokens only — inherits your style, base color, and dark mode
-- [x] Radix UI **and** Base UI flavors supported from the same registry URL
+- [x] Works with any Base UI shadcn style (`base-*`) and any base color
 
 No built-in export — like MRT, exporting is a few lines against the table
 state model; the [export guide](https://monabbir-ahmmad.github.io/shadcn-react-table/docs/guides/export)
@@ -67,7 +67,8 @@ has a copy-paste recipe.
 
 ### Installation
 
-In any shadcn/ui project (Tailwind v4, CSS variables on — the default):
+In any shadcn/ui project on a Base UI style (Tailwind v4, CSS variables on —
+the default):
 
 ```bash
 pnpm dlx shadcn@latest add https://monabbir-ahmmad.github.io/shadcn-react-table/r/data-table.json
@@ -78,9 +79,13 @@ That copies the data-table files into your `@/components/ui/data-table/`
 dependencies, and injects the `--highlight` theme token (falls back to
 `--accent` if dropped). The shadcn **primitives** it relies on (button, table,
 select, …) are pulled from the shadcn registry **in your own configured style**
-and base color — any you already have are reused, not overwritten. A current
-shadcn CLI (4.x, the one with `init -b radix|base`) adapts the source to your
-project's flavor at install time. No manual wiring.
+and base color — any you already have are reused, not overwritten. No manual
+wiring.
+
+The table source uses Base UI APIs (`render` props), so your project must be on
+a **Base UI shadcn style** (`base-*` — e.g. `base-mira`, `base-nova`,
+`base-sera`). Any of those styles and any base color work; Radix styles are not
+supported.
 
 > **Trying it from this repo:** run the demo (`pnpm dev`) and point the CLI at
 > the locally served descriptor:
@@ -96,8 +101,7 @@ project's flavor at install time. No manual wiring.
 <summary>Prefer to install manually?</summary>
 
 First make sure the shadcn primitives the table uses are in your project (this
-also pulls their own deps like `react-day-picker`, `cmdk`, and your flavor's
-headless library — `radix-ui` or `@base-ui/react`):
+also pulls their own deps like `react-day-picker`, `cmdk`, and `@base-ui/react`):
 
 ```bash
 npx shadcn@latest add badge button calendar checkbox command context-menu dialog dropdown-menu input label popover select skeleton slider table tooltip
@@ -292,4 +296,4 @@ The API surface, option names, and feature set are openly modeled on
 [Material React Table](https://www.material-react-table.com) by
 [Kevin Van Cott](https://github.com/KevinVandy) — years of API design iteration
 this project gratefully stands on. Powering everything underneath:
-[TanStack Table](https://tanstack.com/table/v8) and [shadcn/ui](https://ui.shadcn.com).
+[TanStack Table](https://tanstack.com/table/latest) and [shadcn/ui](https://ui.shadcn.com).

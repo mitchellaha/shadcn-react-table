@@ -25,20 +25,22 @@ export function DataTableFilterToggle<TData extends RowData>({
     : localization.showColumnFilters
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label={label}
-          aria-pressed={showColumnFilters}
-          onClick={() => setShowColumnFilters((prev) => !prev)}
-          className={cn(
-            "size-8",
-            showColumnFilters && "bg-muted text-foreground"
-          )}
-        >
-          <icons.filter />
-        </Button>
+      <TooltipTrigger
+        render={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={label}
+            aria-pressed={showColumnFilters}
+            onClick={() => setShowColumnFilters((prev) => !prev)}
+            className={cn(
+              "size-8",
+              showColumnFilters && "bg-muted text-foreground"
+            )}
+          />
+        }
+      >
+        <icons.filter />
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </Tooltip>

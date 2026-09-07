@@ -18,8 +18,10 @@ export interface FilterFieldProps<TData extends RowData, TValue> {
   table: DataTableInstance<TData>
 }
 
+// `data-[size=sm]:h-8` exists for SelectTrigger, whose `data-[size]` height
+// variants beat a plain `h-8`; it is inert on inputs and popover triggers.
 export const FIELD_CLASS =
-  "h-8 rounded-sm text-xs font-normal tracking-normal normal-case"
+  "h-8 rounded-sm text-xs font-normal tracking-normal normal-case data-[size=sm]:h-8"
 
 export const BETWEEN_MODES = new Set(["between", "betweenInclusive"])
 

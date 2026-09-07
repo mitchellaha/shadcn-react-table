@@ -13,9 +13,7 @@ import {
 import { cn } from "@workspace/ui/lib/utils"
 
 import type { DataTableFilterOption, EditVariant } from "../../core/types"
-
-const FIELD_CLASS =
-  "h-8 rounded-sm text-xs font-normal tracking-normal normal-case"
+import { FIELD_CLASS } from "../head/filter-variants/shared"
 
 /**
  * A controlled inline edit field (text / number / select). The parent owns the
@@ -44,12 +42,16 @@ export function DataTableEditField({
   autoFocus?: boolean
 }) {
   if (variant === "select") {
+    const selectOptions = options ?? []
     return (
       <div className="flex flex-col gap-0.5">
         <Select
-          // Always controlled: "" shows the placeholder in both Radix and
-          // Base UI, while `undefined` would flip to uncontrolled.
+          // Always controlled: "" shows the placeholder, while `undefined`
+          // would flip to uncontrolled.
           value={value == null ? "" : String(value)}
+          // Base UI's SelectValue renders the raw value unless the root knows
+          // the items; without this a label that differs never shows.
+          items={selectOptions}
           onValueChange={(next) => {
             onChange(next)
             onCommit?.()
@@ -64,7 +66,7 @@ export function DataTableEditField({
             <SelectValue placeholder="—" />
           </SelectTrigger>
           <SelectContent>
-            {(options ?? []).map((option) => (
+            {selectOptions.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>

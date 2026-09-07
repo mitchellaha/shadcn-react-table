@@ -52,9 +52,9 @@ Run from the **repo root** (not inside `apps/web`):
 pnpm dlx shadcn@latest add <component> -c apps/web
 ```
 
-Components land in `packages/ui/src/components/` (the `@workspace/ui` package, not `apps/web`). The `apps/web/components.json` `ui` alias is wired to `@workspace/ui/components`, so the shadcn CLI writes there even when targeting the web app. Import with `import { Foo } from "@workspace/ui/components/foo"`.
+Components land in `packages/ui/src/components/` (the `@workspace/ui` package, not `apps/web`). After every add, check the result: shadcn 4.21 has emitted `import { cn } from "cn"` (plus a bogus `cn` npm dependency) instead of resolving the `utils` alias; rewrite it to `@workspace/ui/lib/utils` and remove the dependency. `calendar.tsx` also needs `ref={ref}` re-added on the day `<Button>` (the base-mira registry file omits it, which breaks arrow-key focus). The `apps/web/components.json` `ui` alias is wired to `@workspace/ui/components`, so the shadcn CLI writes there even when targeting the web app. Import with `import { Foo } from "@workspace/ui/components/foo"`.
 
-shadcn config (both `components.json` files agree): `style: radix-sera`, `baseColor: neutral`, `iconLibrary: remixicon`, RSC + TSX enabled, CSS variables on. The single source-of-truth stylesheet is `packages/ui/src/styles/globals.css`.
+shadcn config (both `components.json` files agree): `style: base-mira`, `baseColor: neutral`, `iconLibrary: remixicon`, RSC + TSX enabled, CSS variables on. The single source-of-truth stylesheet is `packages/ui/src/styles/globals.css`.
 
 ## Architecture
 

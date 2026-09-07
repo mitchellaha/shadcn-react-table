@@ -7,7 +7,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
-import { cn } from "@workspace/ui/lib/utils"
 
 /**
  * Wraps cell content in a click-to-copy affordance with a transient "Copied"
@@ -42,17 +41,17 @@ export function ClickToCopy({
 
   return (
     <Tooltip open={copied || undefined}>
-      <TooltipTrigger asChild>
-        <button
-          type="button"
-          onClick={copy}
-          aria-label={copyLabel}
-          className={cn(
-            "-mx-1 rounded-sm px-1 text-left transition-colors outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/40"
-          )}
-        >
-          {children}
-        </button>
+      <TooltipTrigger
+        render={
+          <button
+            type="button"
+            onClick={copy}
+            aria-label={copyLabel}
+            className="-mx-1 rounded-sm px-1 text-left transition-colors outline-none hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring/40"
+          />
+        }
+      >
+        {children}
       </TooltipTrigger>
       <TooltipContent>{copied ? copiedLabel : copyLabel}</TooltipContent>
     </Tooltip>

@@ -2,7 +2,7 @@
 
 import type { RowData } from "@tanstack/react-table"
 
-import { Button } from "@workspace/ui/components/button"
+import { buttonVariants } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -17,6 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
+import { cn } from "@workspace/ui/lib/utils"
 
 import type { DataTableInstance } from "../../core/types"
 import { getColumnLabel } from "../../helpers/column-label"
@@ -40,17 +41,18 @@ export function DataTableViewOptions<TData extends RowData>({
   return (
     <DropdownMenu>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
+        <TooltipTrigger
+          render={
+            <DropdownMenuTrigger
               aria-label={localization.columnVisibility}
-              className="size-8"
-            >
-              <icons.columnVisibility />
-            </Button>
-          </DropdownMenuTrigger>
+              className={cn(
+                buttonVariants({ variant: "outline", size: "icon" }),
+                "size-8"
+              )}
+            />
+          }
+        >
+          <icons.columnVisibility />
         </TooltipTrigger>
         <TooltipContent>{localization.columnVisibility}</TooltipContent>
       </Tooltip>
@@ -62,12 +64,13 @@ export function DataTableViewOptions<TData extends RowData>({
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {hideableColumns.map((column) => (
+          // Base UI checkbox items default to `closeOnClick={false}`, so the
+          // menu stays open while several columns are toggled.
           <DropdownMenuCheckboxItem
             key={column.id}
             className="capitalize"
             checked={column.getIsVisible()}
             onCheckedChange={(value) => column.toggleVisibility(!!value)}
-            onSelect={(e) => e.preventDefault()}
           >
             {getColumnLabel(column)}
           </DropdownMenuCheckboxItem>

@@ -31,25 +31,28 @@ export function DataTableAdvancedFilterToggle<TData extends RowData>({
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          aria-label={localization.advancedFilters}
-          aria-pressed={showAdvancedFilterPanel}
-          onClick={() => setShowAdvancedFilterPanel((prev) => !prev)}
-          className={cn(
-            "relative size-8",
-            (showAdvancedFilterPanel || count > 0) && "bg-muted text-foreground"
-          )}
-        >
-          <icons.advancedFilter />
-          {count > 0 && (
-            <Badge className="absolute -top-1.5 -right-1.5 size-4 justify-center rounded-full p-0 text-[10px] tabular-nums">
-              {count}
-            </Badge>
-          )}
-        </Button>
+      <TooltipTrigger
+        render={
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label={localization.advancedFilters}
+            aria-pressed={showAdvancedFilterPanel}
+            onClick={() => setShowAdvancedFilterPanel((prev) => !prev)}
+            className={cn(
+              "relative size-8",
+              (showAdvancedFilterPanel || count > 0) &&
+                "bg-muted text-foreground"
+            )}
+          />
+        }
+      >
+        <icons.advancedFilter />
+        {count > 0 && (
+          <Badge className="absolute -top-1.5 -right-1.5 size-4 justify-center rounded-full p-0 text-[10px] tabular-nums">
+            {count}
+          </Badge>
+        )}
       </TooltipTrigger>
       <TooltipContent>{localization.advancedFilters}</TooltipContent>
     </Tooltip>

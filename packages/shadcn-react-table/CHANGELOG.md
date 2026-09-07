@@ -4,6 +4,45 @@ The version applies to the registry block: `/r/data-table.json` carries it
 in `meta.version`. After installing, record the version you received —
 see the [updating guide](https://monabbir-ahmmad.github.io/shadcn-react-table/docs/guides/updating).
 
+## 0.5.0
+
+Two breaking ports. Re-install the block (`npx shadcn add …`) and read both
+lists before upgrading a consumer.
+
+- **Base UI (breaking):** the table source now uses Base UI APIs (`render`
+  props instead of `asChild`, `items` on `Select`, `closeOnClick` menu
+  semantics). Your project must be on a **Base UI shadcn style** (`base-*`, e.g.
+  `base-mira`, `base-nova`, `base-sera`); Radix styles no longer compile. The
+  primitives are still installed by your own `shadcn add` in your style. Menu
+  checkbox and radio items stay open on click (Base UI default). Tooltips open
+  after 300 ms via the provider's `delay`.
+- **TanStack Table v9 (breaking):** `@tanstack/react-table` and
+  `@tanstack/table-core` are pinned to `9.2.4` and table-core is now a direct
+  dependency. Consumer-facing changes:
+  - Column pinning uses `start` / `end` instead of `left` / `right` — in
+    `columnPinning` state, `column.pin(...)`, and the `data-pinned` attribute.
+  - `columnSizingInfo` / `onColumnSizingInfoChange` are now `columnResizing` /
+    `onColumnResizingChange`.
+  - `initialState` is a shallow partial: a nested slice such as `pagination`
+    must be complete (`{ pageIndex: 0, pageSize: 10 }`).
+  - `get*RowModel` options are no longer accepted; row models are fixed by
+    the package and gated by the feature flags.
+  - Type columns with the new `DataTableColumnDef<TData>` (plus
+    `DataTableColumn` / `DataTableRow` / `DataTableCell` / `DataTableFeatures`
+    and the `dataTableFeatures` value); `columns` is `readonly`.
+    `DataTableInstance<TData>` no longer defaults `TData`.
+  - `options.meta.dataTableRef` is reserved by the package.
+  - `table.getState()` is gone: read `table.state` during render and
+    `table.atoms.<slice>.get()` in handlers. A consumer's own `cell` /
+    `header` / `footer` renderers receive the core table; call
+    `resolveDataTable(table)` (exported) to get the `DataTableInstance`.
+  - `getIsSomeRowsSelected()` / `getIsSomePageRowsSelected()` are true when
+    all rows are selected; indeterminate is `some && !all`.
+  - Custom filter fns: `addMeta` is optional (`addMeta?.(…)`); `sortingFn` on a
+    column def is `sortFn`.
+  - `ColumnMeta` / `TableMeta` augmentation must be declared against
+    `@tanstack/table-core`, not `@tanstack/react-table`.
+
 ## 0.4.1
 
 - **Fix (infinite scroll):** the load trigger now fires when the table is
@@ -26,7 +65,7 @@ see the [updating guide](https://monabbir-ahmmad.github.io/shadcn-react-table/do
   string. See the [infinite scroll guide](https://monabbir-ahmmad.github.io/shadcn-react-table/docs/guides/infinite-scroll).
 - **Row height control** (`rowHeight`, `getRowHeight`): set a flat pixel height
   for every row, or a per-row height via `getRowHeight(row) => number | "auto" |
-  null`. `"auto"` wraps and grows the row to fit its content — even with column
+null`. `"auto"` wraps and grows the row to fit its content — even with column
   resizing on (which otherwise clips cells to one line); a number pins the row
   and clips overflow. Per-row heights feed the virtualizer estimate, and `"auto"`
   rows are measured after render so variable heights virtualize accurately. See

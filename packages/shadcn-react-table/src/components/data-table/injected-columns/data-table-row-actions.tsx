@@ -2,12 +2,13 @@
 
 import type { RowData } from "@tanstack/react-table"
 
-import { Button } from "@workspace/ui/components/button"
+import { Button, buttonVariants } from "@workspace/ui/components/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+import { cn } from "@workspace/ui/lib/utils"
 
 import { resolveDataTable } from "../core/resolve-data-table"
 import type {
@@ -116,15 +117,14 @@ function RowActionsCell<TData extends RowData>({
       {renderRowActions?.({ row, table })}
       {renderRowActionMenuItems && (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label={localization.rowActions}
-              className="size-7"
-            >
-              <icons.columnActions />
-            </Button>
+          <DropdownMenuTrigger
+            aria-label={localization.rowActions}
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "icon" }),
+              "size-7"
+            )}
+          >
+            <icons.columnActions />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {renderRowActionMenuItems({ row, table })}

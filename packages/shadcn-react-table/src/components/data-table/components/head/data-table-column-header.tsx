@@ -3,7 +3,7 @@
 import { flexRender, type RowData } from "@tanstack/react-table"
 
 import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
+import { buttonVariants } from "@workspace/ui/components/button"
 import {
   Popover,
   PopoverContent,
@@ -59,20 +59,19 @@ export function DataTableColumnHeader<TData extends RowData, TValue>({
   const filterPopover = showFilterPopover ? (
     <Popover>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
+        <TooltipTrigger
+          render={
+            <PopoverTrigger
               aria-label={localization.filterByColumn(getColumnLabel(column))}
               className={cn(
-                "size-7 shrink-0 opacity-70 transition-opacity group-hover/th:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100",
+                buttonVariants({ variant: "ghost", size: "icon" }),
+                "size-7 shrink-0 opacity-70 transition-opacity group-hover/th:opacity-100 focus-visible:opacity-100 data-popup-open:opacity-100",
                 hasFilter && "text-primary opacity-100"
               )}
-            >
-              {hasFilter ? <icons.filter /> : <icons.filterOff />}
-            </Button>
-          </PopoverTrigger>
+            />
+          }
+        >
+          {hasFilter ? <icons.filter /> : <icons.filterOff />}
         </TooltipTrigger>
         <TooltipContent>
           {localization.filterByColumn(getColumnLabel(column))}
@@ -134,25 +133,27 @@ export function DataTableColumnHeader<TData extends RowData, TValue>({
     >
       {canSort ? (
         <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              type="button"
-              onClick={column.getToggleSortingHandler()}
-              aria-label={sortTooltip}
-              className="-mx-1.5 flex min-w-0 items-center gap-1 rounded-sm px-1.5 py-1 text-xs font-medium tracking-wider text-muted-foreground uppercase transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 data-[sorted=true]:text-foreground"
-              data-sorted={!!sorted}
-            >
-              <span className="min-w-0 truncate">{labelNode}</span>
-              <SortIndicator sorted={sorted} icons={icons} />
-              {isMultiSort && (
-                <Badge
-                  variant="secondary"
-                  className="ml-0.5 h-4 min-w-4 shrink-0 justify-center rounded-sm px-1 text-[10px] leading-none tabular-nums"
-                >
-                  {sortIndex + 1}
-                </Badge>
-              )}
-            </button>
+          <TooltipTrigger
+            render={
+              <button
+                type="button"
+                onClick={column.getToggleSortingHandler()}
+                aria-label={sortTooltip}
+                className="-mx-1.5 flex min-w-0 items-center gap-1 rounded-sm px-1.5 py-1 text-xs font-medium tracking-wider text-muted-foreground uppercase transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 data-[sorted=true]:text-foreground"
+                data-sorted={!!sorted}
+              />
+            }
+          >
+            <span className="min-w-0 truncate">{labelNode}</span>
+            <SortIndicator sorted={sorted} icons={icons} />
+            {isMultiSort && (
+              <Badge
+                variant="secondary"
+                className="ml-0.5 h-4 min-w-4 shrink-0 justify-center rounded-sm px-1 text-[10px] leading-none tabular-nums"
+              >
+                {sortIndex + 1}
+              </Badge>
+            )}
           </TooltipTrigger>
           <TooltipContent>{sortTooltip}</TooltipContent>
         </Tooltip>

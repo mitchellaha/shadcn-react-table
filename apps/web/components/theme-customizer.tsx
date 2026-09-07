@@ -9,7 +9,7 @@ import {
   RiSunLine,
 } from "@remixicon/react"
 
-import { Button } from "@workspace/ui/components/button"
+import { Button, buttonVariants } from "@workspace/ui/components/button"
 import { Label } from "@workspace/ui/components/label"
 import {
   Popover,
@@ -245,15 +245,14 @@ export function ThemeCustomizer({
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="icon"
-          className="size-8"
-          aria-label="Customize theme"
-        >
-          <RiPaletteLine />
-        </Button>
+      <PopoverTrigger
+        className={cn(
+          buttonVariants({ variant: "outline", size: "icon" }),
+          "size-8"
+        )}
+        aria-label="Customize theme"
+      >
+        <RiPaletteLine />
       </PopoverTrigger>
       <PopoverContent
         align="end"

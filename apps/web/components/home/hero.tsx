@@ -8,7 +8,7 @@ import { DemoShowcase } from "@/components/home/demo-showcase"
 
 const GITHUB_URL = "https://github.com/Monabbir-Ahmmad/shadcn-react-table"
 
-const META = ["MRT V3 parity", "TanStack Table v8", "shadcn registry"]
+const META = ["MRT V3 parity", "TanStack Table v9", "shadcn registry"]
 
 /**
  * Landing hero: a serif headline and CTAs over a faint grid, anchored by a
@@ -52,17 +52,22 @@ export function Hero() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Button asChild size="lg">
-              <Link href="/docs">
-                Get started
-                <RiArrowRightLine data-icon="inline-end" />
-              </Link>
+            <Button
+              render={<Link href="/docs" />}
+              nativeButton={false}
+              size="lg"
+            >
+              Get started
+              <RiArrowRightLine data-icon="inline-end" />
             </Button>
-            <Button asChild size="lg" variant="outline">
-              <a href={GITHUB_URL} target="_blank" rel="noreferrer">
-                <RiGithubFill data-icon="inline-start" />
-                GitHub
-              </a>
+            <Button
+              render={<a href={GITHUB_URL} target="_blank" rel="noreferrer" />}
+              nativeButton={false}
+              size="lg"
+              variant="outline"
+            >
+              <RiGithubFill data-icon="inline-start" />
+              GitHub
             </Button>
           </div>
 

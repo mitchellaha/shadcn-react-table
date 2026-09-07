@@ -15,7 +15,7 @@ const table = useDataTable({
   getRowId: (row) => row.id,
   renderCellActionMenuItems: ({ cell }) => (
     <ContextMenuItem
-      onSelect={() => navigator.clipboard.writeText(String(cell.getValue()))}
+      onClick={() => navigator.clipboard.writeText(String(cell.getValue()))}
     >
       Copy value
     </ContextMenuItem>
@@ -24,6 +24,8 @@ const table = useDataTable({
 
 return <DataTable table={table} />
 ```
+
+Items handle `onClick` and close the menu afterwards; pass `closeOnClick={false}` to keep it open.
 
 ## Click to copy
 

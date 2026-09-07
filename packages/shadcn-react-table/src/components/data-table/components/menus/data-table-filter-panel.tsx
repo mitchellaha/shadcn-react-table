@@ -28,6 +28,7 @@ import type {
   DataTableColumn,
   DataTableInstance,
   FilterVariant,
+  DataTableFilterOption,
 } from "../../core/types"
 import {
   getOperatorsForVariant,
@@ -39,6 +40,13 @@ import { getColumnLabel } from "../../helpers/column-label"
 // stable enough (and avoids crypto/uuid deps).
 let ruleSeq = 0
 const nextRuleId = () => `cn-adv-rule-${++ruleSeq}`
+
+// Base UI's SelectValue renders the raw value unless the Select root gets
+// `items`, so every select below feeds its option list to both.
+const BOOLEAN_ITEMS = [
+  { value: "true", label: "True" },
+  { value: "false", label: "False" },
+]
 
 function columnVariant<TData extends RowData>(
   column: DataTableColumn<TData, unknown> | undefined
@@ -96,6 +104,14 @@ function FilterPanelContent<TData extends RowData>({
 
   const { logic, rules } = draft
   const columns = table.getAllLeafColumns().filter((c) => c.getCanFilter())
+  const columnItems: DataTableFilterOption[] = columns.map((c) => ({
+    value: c.id,
+    label: getColumnLabel(c),
+  }))
+  const logicItems: DataTableFilterOption[] = [
+    { value: "all", label: localization.advancedFiltersMatchAll },
+    { value: "any", label: localization.advancedFiltersMatchAny },
+  ]
 
   const updateRule = (id: string, patch: Partial<AdvancedFilterRule>) =>
     setDraft((group) => ({
@@ -173,6 +189,7 @@ function FilterPanelContent<TData extends RowData>({
           </span>
           <Select
             value={logic === "or" ? "any" : "all"}
+            items={logicItems}
             onValueChange={(v) =>
               setDraft((group) => ({
                 ...group,
@@ -184,12 +201,11 @@ function FilterPanelContent<TData extends RowData>({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">
-                {localization.advancedFiltersMatchAll}
-              </SelectItem>
-              <SelectItem value="any">
-                {localization.advancedFiltersMatchAny}
-              </SelectItem>
+              {logicItems.map((item) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <span className="text-muted-foreground">
@@ -206,7 +222,12 @@ function FilterPanelContent<TData extends RowData>({
             {rules.map((rule) => {
               const column = table.getColumn(rule.columnId)
               const variant = columnVariant(column)
-              const operators = getOperatorsForVariant(variant)
+              const operatorItems = getOperatorsForVariant(variant).map(
+                (op) => ({
+                  value: op,
+                  label: localization.advancedFilterOperators[op] ?? op,
+                })
+              )
               return (
                 <div
                   key={rule.id}
@@ -215,8 +236,9 @@ function FilterPanelContent<TData extends RowData>({
                   <div className="flex items-center gap-2">
                     <Select
                       value={rule.columnId}
-                      // Base UI's Select can emit null (cleared value); Radix
-                      // never does. Guard so both flavors type-check.
+                      items={columnItems}
+                      // Base UI's Select emits null for a cleared value; a rule
+                      // always needs a column, so ignore it.
                       onValueChange={(v) => {
                         if (v != null) changeColumn(rule, v)
                       }}
@@ -227,9 +249,9 @@ function FilterPanelContent<TData extends RowData>({
                         />
                       </SelectTrigger>
                       <SelectContent>
-                        {columns.map((c) => (
-                          <SelectItem key={c.id} value={c.id}>
-                            {getColumnLabel(c)}
+                        {columnItems.map((item) => (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -247,6 +269,7 @@ function FilterPanelContent<TData extends RowData>({
                   <div className="flex items-center gap-2">
                     <Select
                       value={rule.operator}
+                      items={operatorItems}
                       onValueChange={(v) =>
                         changeOperator(rule, v as AdvancedFilterOperator)
                       }
@@ -255,9 +278,9 @@ function FilterPanelContent<TData extends RowData>({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {operators.map((op) => (
-                          <SelectItem key={op} value={op}>
-                            {localization.advancedFilterOperators[op] ?? op}
+                        {operatorItems.map((item) => (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -333,6 +356,7 @@ function RuleValueInput<TData extends RowData>({
     return (
       <Select
         value={(rule.value as string | undefined) ?? ""}
+        items={options}
         onValueChange={(v) => onChange({ value: v })}
       >
         <SelectTrigger className="h-8 flex-1">
@@ -353,14 +377,18 @@ function RuleValueInput<TData extends RowData>({
     return (
       <Select
         value={rule.value === undefined ? "" : String(rule.value)}
+        items={BOOLEAN_ITEMS}
         onValueChange={(v) => onChange({ value: v === "true" })}
       >
         <SelectTrigger className="h-8 flex-1">
           <SelectValue placeholder={localization.advancedFiltersValue} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="true">True</SelectItem>
-          <SelectItem value="false">False</SelectItem>
+          {BOOLEAN_ITEMS.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              {item.label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     )

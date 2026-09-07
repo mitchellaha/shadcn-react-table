@@ -3,7 +3,7 @@
 import type { RowData } from "@tanstack/react-table"
 
 import { Badge } from "@workspace/ui/components/badge"
-import { Button } from "@workspace/ui/components/button"
+import { buttonVariants } from "@workspace/ui/components/button"
 import { Checkbox } from "@workspace/ui/components/checkbox"
 import {
   Command,
@@ -40,26 +40,26 @@ export function MultiSelectFilterField<TData extends RowData, TValue>({
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn(FIELD_CLASS, "w-full justify-between px-2 font-normal")}
-          aria-label={localization.filterByColumn(getColumnLabel(column))}
-        >
-          {selected.length > 0 ? (
-            <span className="flex min-w-0 items-center gap-1">
-              <Badge variant="secondary" className="rounded-sm px-1">
-                {selected.length}
-              </Badge>
-              <span className="truncate">{selected.join(", ")}</span>
-            </span>
-          ) : (
-            <span className="truncate text-muted-foreground">
-              {localization.filterPlaceholder(getColumnLabel(column))}
-            </span>
-          )}
-        </Button>
+      <PopoverTrigger
+        className={cn(
+          buttonVariants({ variant: "outline", size: "sm" }),
+          FIELD_CLASS,
+          "w-full justify-between px-2 font-normal"
+        )}
+        aria-label={localization.filterByColumn(getColumnLabel(column))}
+      >
+        {selected.length > 0 ? (
+          <span className="flex min-w-0 items-center gap-1">
+            <Badge variant="secondary" className="rounded-sm px-1">
+              {selected.length}
+            </Badge>
+            <span className="truncate">{selected.join(", ")}</span>
+          </span>
+        ) : (
+          <span className="truncate text-muted-foreground">
+            {localization.filterPlaceholder(getColumnLabel(column))}
+          </span>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-56 p-0" align="start">
         <Command>
