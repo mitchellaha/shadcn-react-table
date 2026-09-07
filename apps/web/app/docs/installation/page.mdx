@@ -30,7 +30,7 @@ This single command:
 
 1. **Installs npm dependencies** — `@tanstack/react-table`, `@tanstack/table-core`, `@tanstack/react-virtual`, `@tanstack/match-sorter-utils`, `@dnd-kit/*`, `date-fns`, `lucide-react`. The headless library (`@base-ui/react`) comes with the primitives below.
 2. **Pulls the shadcn primitives** it uses (`badge`, `button`, `calendar`, `checkbox`, `command`, `context-menu`, `dialog`, `dropdown-menu`, `input`, `label`, `popover`, `select`, `skeleton`, `slider`, `table`, `tooltip`) in your style — and skips any you already have.
-3. **Writes the table** to `components/ui/data-table/`.
+3. **Writes the table** under your `ui` alias: `components/ui/data-table/` in a default project, or inside your ui workspace package in a monorepo (target aliases need **shadcn CLI 4.7.0+**, May 2026; older CLIs write a literal `@ui/` folder).
 4. **Injects design tokens** (`--highlight`, `--highlight-foreground`) into your `globals.css`.
 
 ## Verify

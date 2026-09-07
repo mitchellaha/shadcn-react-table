@@ -141,7 +141,10 @@ for (const abs of walk(DT_DIR).sort()) {
   files.push({
     path: `ui/data-table/${sub}`,
     type: "registry:ui",
-    target: `components/ui/data-table/${sub}`,
+    // `@ui/` is a shadcn target alias (CLI >= 4.7.0): it resolves to the
+    // consumer's `ui` alias, so the block lands at `components/ui/data-table/`
+    // in a default project and inside the ui workspace package in a monorepo.
+    target: `@ui/data-table/${sub}`,
     content: read(`components/data-table/${sub}`),
   })
 }

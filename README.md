@@ -74,7 +74,7 @@ the default):
 pnpm dlx shadcn@latest add https://monabbir-ahmmad.github.io/shadcn-react-table/r/data-table.json
 ```
 
-That copies the data-table files into your `@/components/ui/data-table/`
+That copies the data-table files under your `ui` alias (`@/components/ui/data-table/` by default; needs shadcn CLI 4.7.0+)
 (rewriting import aliases to match your project), installs the npm
 dependencies, and injects the `--highlight` theme token (falls back to
 `--accent` if dropped). The shadcn **primitives** it relies on (button, table,
